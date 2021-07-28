@@ -1,0 +1,11 @@
+/build/
+/files/
+/vendor/
+
+/.cache
+
+*.sublime-project
+*.sublime-workspace
+compile_commands.json
+imgui.ini
+/start-sublime.sh
