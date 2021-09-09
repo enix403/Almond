@@ -30,8 +30,8 @@ namespace Almond
 
 #    define AD_CORE_LOG_TRACE(...) ::Almond::Logging::GetCoreLogger().trace(__VA_ARGS__)
 #    define AD_CORE_LOG_DEBUG(...) ::Almond::Logging::GetCoreLogger().debug(__VA_ARGS__)
-#    define AD_CORE_LOG_INFO(...) ::Almond::Logging::GetCoreLogger().info(__VA_ARGS__)
-#    define AD_CORE_LOG_WARN(...) ::Almond::Logging::GetCoreLogger().warn(__VA_ARGS__)
+#    define AD_CORE_LOG_INFO(...)  ::Almond::Logging::GetCoreLogger().info(__VA_ARGS__)
+#    define AD_CORE_LOG_WARN(...)  ::Almond::Logging::GetCoreLogger().warn(__VA_ARGS__)
 #    define AD_CORE_LOG_ERROR(...) ::Almond::Logging::GetCoreLogger().error(__VA_ARGS__)
 
 #else

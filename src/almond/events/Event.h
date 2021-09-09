@@ -25,10 +25,12 @@ namespace Almond::Events
         KeyRelease
     };
 
-#define EVENT_CATEGORY_WINDOW BITMASK(0)
-#define EVENT_CATEGORY_MOUSE BITMASK(1)
-#define EVENT_CATEGORY_KEYBOARD BITMASK(2)
-#define EVENT_CATEGORY_INPUT BITMASK(3)
+    // clang-format off
+#define EVENT_CATEGORY_WINDOW       BITMASK(0)
+#define EVENT_CATEGORY_MOUSE        BITMASK(1)
+#define EVENT_CATEGORY_KEYBOARD     BITMASK(2)
+#define EVENT_CATEGORY_INPUT        BITMASK(3)
+    // clang-format on
 
     /* ======================== Helper Macros ======================== */
 
