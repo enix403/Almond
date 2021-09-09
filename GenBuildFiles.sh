@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 
+# You can add extra arguments which will be passed to cmake
+# Example: Run `./GenBuildFiles Release -G Ninja` to use the ninja build system instead of the default 
+
+# Also you can choose which compiler to use using the `CC` and `CXX` environment variables
+# Example: Run `CC=/usr/bin/clang CXX=/usr/bin/clang++ ./GenBuildFiles Release -G Ninja` to use clang instead of default compiler 
+
 function GenBuildFiles_Debug() {
     mkdir -p build/debug
     echo "------------ Generating build files for Debug build mode ------------"
-    cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug "${@}" -S .   
+    exec env cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug "${@}" -S .   
 }
 
 function GenBuildFiles_Release() {
