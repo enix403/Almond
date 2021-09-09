@@ -2,7 +2,7 @@
 
 (An ongoing attempt to create) A simple 3D model editor.
 
-Almond is an early stage simple and interactive 3D model editor. Not much is implemented currently.
+Almond is an early stage simple and interactive 3D model editor. Not much is implemented currently.  
 *Note: This is just a hobby project, nothing serious.*
 
 ## Getting Started
