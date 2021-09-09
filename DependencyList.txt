@@ -1,4 +1,0 @@
-DearImgui (Docking branch)
-glad
-spdlog
-stb_image
