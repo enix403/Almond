@@ -1,4 +1,4 @@
-# Almond Editor ![License](https://img.shields.io/github/license/enix403/Almond)
+# Almond Editor ![License](https://img.shields.io/github/license/enix403/Almond#1)
 
 (An ongoing attempt to create) A simple 3D model editor.
 
