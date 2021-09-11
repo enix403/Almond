@@ -42,7 +42,7 @@ namespace Almond
 
         // (Translation * Rotation) ^ -1 = (Rotation ^ -1) * (Translation ^ -1)
         // And rotation inverse is inverse of is quaternion (which itself is its conjugate)
-        // and translation inverse is, well, the opposite direction
+        // and translation inverse is, well, the opposite translation
         glm::mat4 inverseTransform = glm::toMat4(glm::conjugate(
             glm::quat({-m_ArcBallPitch, -m_ArcBallYaw, 0.0f})) // inverse of a unit quaternion is its conjugate
         );
