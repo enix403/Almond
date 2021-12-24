@@ -19,7 +19,7 @@ namespace Almond {
         return state == GLFW_PRESS || state == GLFW_REPEAT;
     }
 
-    FloatTuple LinuxInput::GetMousePositionImpl() const {
+    float_vec2 LinuxInput::GetMousePositionImpl() const {
         double mouseX, mouseY;
         glfwGetCursorPos(GET_GLFW_WINDOW(), &mouseX, &mouseY);
         return {(float)mouseX, (float)mouseY};

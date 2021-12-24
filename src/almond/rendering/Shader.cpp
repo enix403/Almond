@@ -209,11 +209,7 @@ namespace Almond
             return m_Shaders[name];
 
         ShaderSources sources;
-        bool success = ReadShaderSourcesFromFile(sources, filepath);
-        if(!success)
-        {
-            return nullptr;
-        }
+        ReadShaderSourcesFromFile(sources, filepath);
 
         Ref<Shader> shader = Shader::Create(name, sources);
         m_Shaders[name] = shader;

@@ -15,7 +15,7 @@ namespace Almond
         {
             return s_InputImpl->IsMouseButtonPressedImpl(btncode);
         }
-        inline static FloatTuple GetMousePosition()
+        inline static float_vec2 GetMousePosition()
         {
             return s_InputImpl->GetMousePositionImpl();
         }
@@ -31,7 +31,7 @@ namespace Almond
     protected:
         virtual bool IsKeyPressedImpl(int keycode) const = 0;
         virtual bool IsMouseButtonPressedImpl(int btncode) const = 0;
-        virtual FloatTuple GetMousePositionImpl() const = 0;
+        virtual float_vec2 GetMousePositionImpl() const = 0;
         virtual float GetMouseXImpl() const = 0;
         virtual float GetMouseYImpl() const = 0;
 

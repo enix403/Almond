@@ -8,7 +8,7 @@ namespace Almond {
     protected:
         bool        IsKeyPressedImpl(int keycode) const override;
         bool        IsMouseButtonPressedImpl(int btncode) const override;
-        FloatTuple   GetMousePositionImpl() const override;
+        float_vec2   GetMousePositionImpl() const override;
         float       GetMouseXImpl() const override;
         float       GetMouseYImpl() const override;
     };

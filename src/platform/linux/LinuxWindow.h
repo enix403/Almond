@@ -32,9 +32,7 @@ namespace Almond {
         void PollEvents() override;
         void Close() override;
 
-        // TODO: temporary, will be replaced by event system using 'WindowClosed' event
-
-        void* GetNativeHandle() const override;
+        void* GetNativeHandle() const override { return m_Handle; }
 
         void SetEventCallback(EventCallbackFn callback) override { m_WindowData.CallbackFn = callback; }
 
@@ -51,9 +49,9 @@ namespace Almond {
             u32 Width;
             u32 Height;
 
-            std::string Title; 
-            // Perfectly fine to copy the title string since it will only be copied only a few times
-            // during the whole lifetime of the application
+            std::string Title;  // Perfectly fine to copy the title string since it will only be copied
+                                // only during the intialization, saving us the headache (and the cpu speed)
+                                // of managing any sort of string reference
 
             EventCallbackFn CallbackFn = nullptr;
         };

@@ -4,18 +4,7 @@
 
 namespace Almond
 {
-    struct U32Vec2
-    {
-        u32 x, y;
-    };
-
-    struct IntVec2
-    {
-        int x, y;
-    };
-
-    struct FloatTuple
-    {
-        float x, y;
-    };
-} // namespace Almond
+    struct float_vec2 { float x, y; };
+    struct float_vec3 { float x, y, z; };
+    struct float_vec4 { float x, y, z, w; };
+}

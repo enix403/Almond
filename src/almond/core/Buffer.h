@@ -37,7 +37,7 @@ namespace Almond
         const std::string Name;
         int VecComponentCount; // number of components (i.e 4 for vec4) or 1 in case of float, int, etc
         VertAttribComponentType ComponentType;
-        bool IsNormalized;
+        bool Normalize;
     };
 
     using VertexLayout = std::vector<VLayoutElement>;
@@ -86,3 +86,5 @@ namespace Almond
     };
 
 } // namespace Almond
+
+

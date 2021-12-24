@@ -71,7 +71,7 @@ namespace Almond
             glVertexAttribPointer(elem.LayoutIndex,
                                   elem.VecComponentCount,
                                   ComponentTypeToOpenGlType(elem.ComponentType),
-                                  elem.IsNormalized ? GL_TRUE : GL_FALSE,
+                                  elem.Normalize ? GL_TRUE : GL_FALSE,
                                   stride,
 
 #pragma clang diagnostic push
