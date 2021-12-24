@@ -1,6 +1,6 @@
 #include "almond/rendering/Texture.h"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <stb_image/stb_image.h>
 
 #include "almond/core/Logging.h"

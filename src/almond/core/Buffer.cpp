@@ -1,6 +1,6 @@
 #include "almond/core/Buffer.h"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 namespace Almond
 {

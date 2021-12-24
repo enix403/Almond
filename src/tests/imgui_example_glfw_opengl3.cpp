@@ -8,7 +8,7 @@
 #include "thirdparty/imgui_impl/imgui_impl_opengl3.h"
 #include <stdio.h>
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 // Include glfw3.h after our OpenGL definitions
 #define GLFW_INCLUDE_NONE

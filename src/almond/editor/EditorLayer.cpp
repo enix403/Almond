@@ -1,6 +1,6 @@
 #include "almond/editor/EditorLayer.h"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 #include <imgui/imgui.h>
 
 #include <glm/glm.hpp>

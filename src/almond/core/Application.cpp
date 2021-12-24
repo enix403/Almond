@@ -25,19 +25,6 @@ namespace Almond
         s_Instance = new Application();
     }
 
-    /* 
-    void Application::Free() {
-        if (s_Instance == nullptr) {
-            AD_CORE_LOG_ERROR("Failed to free, Application not initialized");
-            // AD_CORE_LOG_TRACE("awkldjlawfn")
-            return;
-        }
-
-        delete s_Instance;
-        s_Instance = nullptr;
-    }
-    */
-
     void Application::Run()
     {
 
@@ -46,10 +33,6 @@ namespace Almond
             AD_CORE_LOG_ERROR("Application is already running");
             return;
         }
-
-        // if (m_Running) {
-        // AD_CORE_LOG_INFO(...)
-        // }
 
         m_Running = true;
 
@@ -85,24 +68,19 @@ namespace Almond
         }
     }
 
-    void Application::Update()
-    {
-        for(Ref<Layer>& layerRef : m_LayerStack)
-        {
-            layerRef->OnUpdate();
-        }
-    }
-
     void Application::StartMainLoop()
     {
         while(m_Running)
         {
             m_MainWindow->PollEvents();
-            Update();
+            for(const Ref<Layer>& layerRef : m_LayerStack)
+            {
+                layerRef->OnUpdate();
+            }
             m_MainWindow->SwapBuffers();
         }
 
-        for(Ref<Layer>& layerRef : m_LayerStack)
+        for(const Ref<Layer>& layerRef : m_LayerStack)
         {
             layerRef->OnDetach();
         }

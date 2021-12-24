@@ -7,3 +7,5 @@
 *.sublime-workspace
 compile_commands.json
 imgui.ini
+
+.user.gitignore

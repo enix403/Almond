@@ -28,7 +28,6 @@ namespace Almond
         };
 
     private:
-        void Update();
         void OnEvent(const Events::Event& event);
         void StartMainLoop();
 

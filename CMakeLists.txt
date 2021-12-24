@@ -25,8 +25,11 @@ set(
     stb_image
 )
 
+target_compile_definitions(almond PUBLIC GLFW_INCLUDE_NONE)
+
 target_include_directories(almond PRIVATE ${APP_SOURCES_DIRECTORY})
 target_link_libraries(almond ${APP_LIBS})
 
 set_property(TARGET almond PROPERTY C_STANDARD 11)
 set_property(TARGET almond PROPERTY CXX_STANDARD 17)
+

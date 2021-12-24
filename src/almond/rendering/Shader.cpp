@@ -1,7 +1,7 @@
 #include "almond/rendering/Shader.h"
 #include "almond/core/Logging.h"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 #include <glm/gtc/type_ptr.hpp>
 

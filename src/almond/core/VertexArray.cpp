@@ -1,6 +1,6 @@
 #include "almond/core/VertexArray.h"
 
-#include <glad/glad.h>
+#include <glad/gl.h>
 
 namespace
 {

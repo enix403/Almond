@@ -1,5 +1,4 @@
 #include "platform/linux/LinuxWindow.h"
-#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 #include "almond/core/Logging.h"
@@ -20,8 +19,10 @@ namespace Almond {
     // :   m_WindowData({props.width, props.height, props.title}) {}
 
 
-    void LinuxWindow::Initialize(const WindowCreationProps& props) {
-
+    void LinuxWindow::Initialize(const WindowCreationProps& props) 
+    {
+        AD_CORE_LOG_DEBUG("Initializing Linux Window");
+        
         m_WindowData.Width = props.width;
         m_WindowData.Height = props.height;
         m_WindowData.Title = props.title;
