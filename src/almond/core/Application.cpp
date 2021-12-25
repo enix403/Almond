@@ -3,12 +3,18 @@
 #include <functional>
 
 #include "almond/core/Logging.h"
+#include "almond/core/Timestep.h"
 #include "almond/core/base.h"
 #include "almond/editor/EditorLayer.h"
 #include "almond/rendering/RenderAPI.h"
 #include "almond/ui/imgui_setup.h"
 #include "almond/ui/ImGuiLayer.h"
 #include "platform/linux/LinuxWindow.h"
+
+#include <GLFW/glfw3.h>
+
+// double glfwGetTime();
+namespace chrono = std::chrono;
 
 namespace Almond
 {
@@ -86,13 +92,25 @@ namespace Almond
     {
         m_LayerStack.PushLayer(new Editor::EditorLayer());
 
+        m_LastFrameTime = chrono::high_resolution_clock::now();
+
         while(m_Running)
         {
             m_MainWindow->PollEvents();
+
+            auto currentTime = chrono::high_resolution_clock::now();
+
+            // .count() gives the number of whatever the duration_cast<some_unit>() unit is, in this case microseconds.
+            // Using chrono::microseconds instead of chrono::seconds or (chrono::milliseconds) gives more precision
+            float timeInterval = chrono::duration_cast<chrono::microseconds>(currentTime - m_LastFrameTime).count() / 1.0e6f;
+            m_LastFrameTime = currentTime;
+
+            Timestep timestep(timeInterval);
+
             if (!m_IsMinimized)
             {
                 for(Layer* layer: m_LayerStack.LayersIter())
-                    layer->OnUpdate();
+                    layer->OnUpdate(timestep);
                 
                 ImGuiLayer::BeginFrame();
                 for(Layer* layer: m_LayerStack.LayersIter())

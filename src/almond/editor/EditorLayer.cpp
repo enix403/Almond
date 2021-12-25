@@ -90,7 +90,7 @@ namespace Almond::Editor
 
             m_FrameBuffer = CreateScoped<Framebuffer>(fbspec);
         }
-              
+
         m_Texture = Texture2D::CreateFromFile("assets/textures/cosas.png");
         m_Texture->Bind(0);
 
@@ -111,7 +111,7 @@ namespace Almond::Editor
         return true;
     }
 
-    void EditorLayer::OnUpdate()
+    void EditorLayer::OnUpdate(Timestep ts)
     {
         m_FrameBuffer->Bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

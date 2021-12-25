@@ -3,6 +3,7 @@
 #include <string>
 
 #include "almond/events/Event.h"
+#include "almond/core/Timestep.h"
 
 namespace Almond
 {
@@ -24,7 +25,7 @@ namespace Almond
          * */
         virtual bool OnEvent(const Events::Event& e) { return true; };
 
-        virtual void OnUpdate() { };
+        virtual void OnUpdate(Timestep ts) { };
 
         virtual void OnImGuiRender() { };
         virtual void OnPostImGuiRender() { };

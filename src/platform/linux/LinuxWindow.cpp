@@ -22,7 +22,7 @@ namespace Almond {
     void LinuxWindow::Initialize(const WindowCreationProps& props) 
     {
         AD_CORE_LOG_DEBUG("Initializing Linux Window");
-        
+
         m_WindowData.Width = props.width;
         m_WindowData.Height = props.height;
         m_WindowData.Title = props.title;

@@ -20,7 +20,7 @@ namespace Almond::Editor
 
         void OnAttach() override;
         void OnDetach() override;
-        void OnUpdate() override;
+        void OnUpdate(Timestep ts) override;
 
         bool OnEvent(const Events::Event& e) override;
 

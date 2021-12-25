@@ -1,14 +1,16 @@
 #pragma once
 
+#include <chrono>
+
 #include "almond/core/base.h"
 #include "almond/events/Event.h"
 #include "almond/events/window_events.h"
 #include "almond/window/Window.h"
 #include "almond/layers/LayerStack.h"
 
+
 namespace Almond
 {
-
     class Application
     {
     public:
@@ -43,6 +45,8 @@ namespace Almond
         Almond::Scoped<Window> m_MainWindow;
 
         LayerStack m_LayerStack;
+
+        std::chrono::high_resolution_clock::time_point m_LastFrameTime;
     };
 
 } // namespace Almond
