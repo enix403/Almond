@@ -35,11 +35,12 @@ namespace Almond {
 
         void Bind();
         void Unbind();
-        void ReloadSpecs();
+        void Invalidate();
+        void Resize(uint32_t width, uint32_t height);
         
 
     private:
-        uint32_t m_FBId;
+        uint32_t m_FBId = 0;
         FramebufferSpecification m_Spec;
 
         uint32_t m_ColorAttachment, m_DepthAttachment;

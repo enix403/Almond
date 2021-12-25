@@ -11,6 +11,7 @@
 #include "almond/core/Application.h"
 #include "almond/core/Logging.h"
 #include "almond/events/window_events.h"
+#include "almond/ui/ImGuiLayer.h"
 
 #include "almond/utils/colors.h"
 
@@ -86,10 +87,10 @@ namespace Almond::Editor
     {
         {
             FramebufferSpecification fbspec {};
-            fbspec.Width = 1280;
-            fbspec.Height = 720;
+            m_ViewportSize.x = fbspec.Width = 1280;
+            m_ViewportSize.y = fbspec.Height = 720;
 
-            m_TestFrameBuffer = CreateScoped<Framebuffer>(fbspec);
+            m_FrameBuffer = CreateScoped<Framebuffer>(fbspec);
         }
               
         m_Texture = Texture2D::CreateFromFile("assets/textures/cosas.png");
@@ -114,10 +115,10 @@ namespace Almond::Editor
     {
         if(e.GetType() == Events::EventType::WindowResize)
         {
-            const Events::WindowResizeEvent& we = static_cast<const Events::WindowResizeEvent&>(e);
-            glViewport(0, 0, we.GetWidth(), we.GetHeight());
-            float winAspectRatio = (float)we.GetWidth() / we.GetHeight();
-            m_Camera->SetAspectRatio(winAspectRatio);
+            // const Events::WindowResizeEvent& we = static_cast<const Events::WindowResizeEvent&>(e);
+            // glViewport(0, 0, we.GetWidth(), we.GetHeight());
+            // float winAspectRatio = (float)we.GetWidth() / we.GetHeight();
+            // m_Camera->SetAspectRatio(winAspectRatio);
         }
         else
             m_CamController->OnEvent(e);
@@ -127,7 +128,7 @@ namespace Almond::Editor
 
     void EditorLayer::OnUpdate()
     {
-        m_TestFrameBuffer->Bind();
+        m_FrameBuffer->Bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         m_vao->Bind();
@@ -141,7 +142,7 @@ namespace Almond::Editor
         m_Shader->SetUniformFloat3("u_DirectionToLight", glm::normalize(-m_Camera->GetFowardDirection()));
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        m_TestFrameBuffer->Unbind();
+        m_FrameBuffer->Unbind();
 
         /* ========================================================================================= */
         /* ========================================================================================= */
@@ -149,23 +150,46 @@ namespace Almond::Editor
         /* ========================================================================================= */
         /* ========================================================================================= */
 
+        ImGuiLayer::BeginFrame(); // TODO: Move to it's own ImGuiRender() method
         CreateDockSpace();
 
         ImGui::Begin("Sheet View");
         ImGui::Text("Here goes the main grid....");
         ImGui::Text(
             "App average: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::End();
 
-        unsigned int textureId = m_TestFrameBuffer->GetColorAttachmentRendererId();
+        /* ================= Scene Viewport ================= */
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.f, 0.f });
+        ImGui::Begin("Scene Viewport");
+        auto newViewportSize = ImGui::GetContentRegionAvail();
+
+        unsigned int textureId = m_FrameBuffer->GetColorAttachmentRendererId();
         ImGui::Image((void*)textureId, 
-                    ImVec2 { 1280.f, 720.f }, // size 
+                    ImVec2 { m_ViewportSize.x, m_ViewportSize.y }, // size 
                     { 0.f, 1.f }, // upper left UV
                     { 1.f, 0.f} // bottom right UV
                 );
 
         ImGui::End();
+        ImGui::PopStyleVar();
+
+        /* ======== */
 
         END_EDITOR_DOCK_SPACE();
+        ImGuiLayer::EndFrame();
+
+        if (newViewportSize.x != m_ViewportSize.x || newViewportSize.y != m_ViewportSize.y)
+        {
+            m_ViewportSize = { newViewportSize.x, newViewportSize.y };
+            // AD_CORE_LOG_WARN("Resizing Framebuffer to {0}, {1}", m_ViewportSize.x, m_ViewportSize.y);
+            m_FrameBuffer->Resize(m_ViewportSize.x, m_ViewportSize.y);
+
+            glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
+            float winAspectRatio = m_ViewportSize.x / m_ViewportSize.y;
+            m_Camera->SetAspectRatio(winAspectRatio);
+        }
 
         // ImGui::Text("Color:");
         // ImGui::SameLine();

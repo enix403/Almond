@@ -43,6 +43,8 @@ namespace Almond::Editor
         Ref<EditorCamera> m_Camera;
         Ref<EditorCameraController> m_CamController;
 
-        Scoped<Framebuffer> m_TestFrameBuffer;
+        Scoped<Framebuffer> m_FrameBuffer;
+
+        glm::vec2 m_ViewportSize { 0.f, 0.f };
     };
 } // namespace Almond::Editor

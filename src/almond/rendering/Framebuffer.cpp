@@ -9,16 +9,25 @@ namespace Almond {
     Framebuffer::Framebuffer(const FramebufferSpecification& spec)
     :   m_Spec(spec)
     {
-        ReloadSpecs();
+        Invalidate();
     }
 
     Framebuffer::~Framebuffer() 
     {
         glDeleteFramebuffers(1, &m_FBId);
+        glDeleteTextures(1, &m_ColorAttachment);
+        glDeleteTextures(1, &m_DepthAttachment);
     }
 
-    void Framebuffer::ReloadSpecs()
+    void Framebuffer::Invalidate()
     {
+        if (m_FBId)
+        {
+            glDeleteFramebuffers(1, &m_FBId);
+            glDeleteTextures(1, &m_ColorAttachment);
+            glDeleteTextures(1, &m_DepthAttachment);
+        }
+
         glCreateFramebuffers(1, &m_FBId);
         glBindFramebuffer(GL_FRAMEBUFFER, m_FBId);  
 
@@ -41,6 +50,13 @@ namespace Almond {
         // TODO: ASSET(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);  
+    }
+
+    void Framebuffer::Resize(uint32_t width, uint32_t height)
+    {
+        m_Spec.Width = width;
+        m_Spec.Height = height;
+        Invalidate();
     }
 
     void Framebuffer::Bind()

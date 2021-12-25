@@ -85,12 +85,12 @@ namespace Almond
             m_MainWindow->PollEvents();
             if (!m_IsMinimized)
             {
-                ImGuiLayer::BeginFrame();
+                // ImGuiLayer::BeginFrame();
                 for(const Ref<Layer>& layer : m_LayerStack)
                 {
                     layer->OnUpdate();
                 }
-                ImGuiLayer::EndFrame();
+                // ImGuiLayer::EndFrame();
             }
             m_MainWindow->SwapBuffers();
         }
