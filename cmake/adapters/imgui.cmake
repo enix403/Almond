@@ -1,11 +1,11 @@
 add_library(
     imgui STATIC
 
-    "vendor/DearImgui_Docking/imgui/imgui.cpp"
-    "vendor/DearImgui_Docking/imgui/imgui_demo.cpp"
-    "vendor/DearImgui_Docking/imgui/imgui_draw.cpp"
-    "vendor/DearImgui_Docking/imgui/imgui_tables.cpp"
-    "vendor/DearImgui_Docking/imgui/imgui_widgets.cpp"
+    "vendor/DearImGui/imgui/imgui.cpp"
+    "vendor/DearImGui/imgui/imgui_demo.cpp"
+    "vendor/DearImGui/imgui/imgui_draw.cpp"
+    "vendor/DearImGui/imgui/imgui_tables.cpp"
+    "vendor/DearImGui/imgui/imgui_widgets.cpp"
 )
 
-target_include_directories(imgui PUBLIC vendor/DearImgui_Docking)
+target_include_directories(imgui PUBLIC vendor/DearImGui)
