@@ -6,6 +6,8 @@
 
 // Outputs a comma separated list of rgb colors given in the range [0, 255]
 #define COMMA_RGB_INT(r, g, b) (r) / 255.0f, (g) / 255.0f, (b) / 255.0f
+#define IRGB_TO_FRGB(r, g, b) { (r) / 255.0f, (g) / 255.0f, (b) / 255.0f }
+
 
 // namespace Almond {
 //     struct Color {

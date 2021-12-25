@@ -31,43 +31,53 @@ namespace Almond::Editor
         m_MasterAreaFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
         m_ShaderLibrary = CreateScoped<ShaderLibrary>();
-        m_Shader = m_ShaderLibrary->LoadFromFile("DefaultShader", "assets/shaders/DefaultShader.glsl");
-        glClearColor(COMMA_RGB_INT(55, 55, 55), 1.0f);
+        m_Camera = CreateRef<EditorCamera>(1.0f);
+        m_Camera->SetClippingPlanes(0.01f, 100.0f);
+        m_CamController = CreateRef<EditorCameraController>(m_Camera);
+
+      
+        m_Texture = Texture2D::CreateFromFile("assets/textures/monster.png");
+        m_Texture->Bind(0);
+
+        // m_Texture = CreateRef<Texture2D>(1, 1, TexFormat::RGBA_8);
+        // uint8_t textureData[4] = { 0xff, 0xff, 0x00, 0xff };
+        // m_Texture->SetData(&textureData, sizeof(textureData));
+        // m_Texture->Bind(0);
+
+        m_Shader = m_ShaderLibrary->LoadFromFile("DiffuseModel", "assets/shaders/DiffuseModel.glsl");
+
+        m_Shader->Bind();
+        m_Shader->SetUniformFloat3("u_Color", IRGB_TO_FRGB(174, 177, 189));
+        m_Shader->SetUniformInt("u_ShouldSampleTexture", 1);
+        m_Shader->SetUniformInt("u_Texture", 0); // the slot the texture is bound to
+
 
         m_vao = CreateScoped<VertexArray>();
         m_vbo = CreateScoped<VertexBuffer>();
         m_ibo = CreateScoped<IndexBuffer>();
 
-        // m_Texture = Texture2D::CreateFromFile("assets/textures/Logo1.jpg");
-        m_Texture = Texture2D::CreateFromFile("assets/textures/monster.png");
-
-        //  0.5f,  0.5f,  // top right
-        //  0.5f, -0.5f,  // bottom right
-        // -0.5f, -0.5f,  // bottom left
-        // -0.5f,  0.5f   // top left
-
-        float vertices[] = {
-            -0.5f, 0.5f,  0.0f, 0.0f, 1.0f, // top left
-            0.5f,  0.5f,  0.0f, 1.0f, 1.0f, // top right
-            0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f // bottom left
+        float vertices[] = 
+        {
+            -0.5f, -0.5f, 0.f, 0.f, 0.f, +1.f, 0.0f, 0.0f, // bottom left
+            0.5f,  -0.5f, 0.f, 0.f, 0.f, +1.f, 1.0f, 0.0f, // bottom right
+            0.5f,  0.5f,  0.f, 0.f, 0.f, +1.f, 1.0f, 1.0f, // top right
+            -0.5f, 0.5f,  0.f, 0.f, 0.f, +1.f, 0.0f, 1.0f, // top left
         };
 
         unsigned int indices[] = {
-            // note that we start from 0!
-            0,
-            1,
-            2, // first triangle
-            0,
-            2,
-            3 // second triangle
+            0, 1, 2, 
+            0, 2, 3
         };
 
         m_vbo->SetData(vertices, sizeof(vertices), BUF_USAGE_STATIC_DRAW);
         m_ibo->SetIndices(indices, sizeof(indices), BUF_USAGE_STATIC_DRAW);
 
-        VertexLayout layout = {{0, "Postion", 3, VertAttribComponentType::Float, false},
-                               {1, "UV", 2, VertAttribComponentType::Float, false}};
+
+        VertexLayout layout = {
+            {0, "ia_Pos",       3, VertAttribComponentType::Float, false},
+            {1, "ia_Normal",    3, VertAttribComponentType::Float, false},
+            {2, "ia_TexCoords", 2, VertAttribComponentType::Float, false},
+        };
 
         m_vao->AddVertexBuffer(*m_vbo, layout);
         m_vao->AddIndexBuffer(*m_ibo);
@@ -76,9 +86,16 @@ namespace Almond::Editor
         const auto& winRef = Application::Get()->GetMainWindow();
         float winAspectRatio = (float)winRef.GetWidth() / winRef.GetHeight();
 
-        m_Camera = CreateRef<OrthographicCamera2D>(3, winAspectRatio, -1.0f, 1.0f);
+        glClearColor(0.090196f, 0.090196f, 0.0901961f, 1.f);
+        // glClearColor(COMMA_RGB_INT(55, 55, 55), 1.0f);
 
         glEnable(GL_MULTISAMPLE);
+
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
+
+        // glEnable(GL_CULL_FACE); // temp
+        glEnable(GL_DEPTH_TEST); // temp
     }
 
     void EditorLayer::OnAttach() { }
@@ -90,32 +107,28 @@ namespace Almond::Editor
         {
             const Events::WindowResizeEvent& we = static_cast<const Events::WindowResizeEvent&>(e);
             glViewport(0, 0, we.GetWidth(), we.GetHeight());
-            // const auto& winRef = Application::Get()->GetMainWindow();
-            // float winAspectRatio = (float)winRef.GetWidth() / winRef.GetHeight();
             float winAspectRatio = (float)we.GetWidth() / we.GetHeight();
-            m_Camera->Resize(winAspectRatio);
+            m_Camera->SetAspectRatio(winAspectRatio);
         }
+        else
+            m_CamController->OnEvent(e);
 
         return false;
     }
 
     void EditorLayer::OnUpdate()
     {
-        glEnable(GL_DEPTH_TEST);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         m_vao->Bind();
         m_Shader->Bind();
 
-        static glm::vec3 color = {COMMA_RGB_INT(3, 255, 204)};
-        static glm::mat4 transform{1.0f};
 
-        m_Texture->Bind(0);
+        m_Shader->SetUniformMat4("u_Transform", m_Camera->GetProjectionView());
+        m_Shader->SetUniformMat4("u_Model", glm::mat4 { 1.0f });
 
-        m_Shader->SetUniformInt("u_Texture", 0);
-        m_Shader->SetUniformFloat3("u_Color", color);
-        m_Shader->SetUniformMat4("u_ProjectionView", m_Camera->GetProjectionView());
-        m_Shader->SetUniformMat4("u_Model", transform);
+        // light follows the camera
+        m_Shader->SetUniformFloat3("u_DirectionToLight", glm::normalize(-m_Camera->GetFowardDirection()));
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -126,9 +139,9 @@ namespace Almond::Editor
 
         ImGui::NewLine();
 
-        ImGui::Text("Color:");
-        ImGui::SameLine();
-        ImGui::ColorEdit3("##color-edit-1", (float*)&color);
+        // ImGui::Text("Color:");
+        // ImGui::SameLine();
+        // ImGui::ColorEdit3("##color-edit-1", (float*)&color);
 
         ImGui::NewLine();
 

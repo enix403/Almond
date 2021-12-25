@@ -4,7 +4,8 @@
 #include "almond/core/VertexArray.h"
 #include "almond/core/base.h"
 #include "almond/layers/Layer.h"
-#include "almond/rendering/OrthographicCamera2D.h"
+// #include "almond/rendering/OrthographicCamera2D.h"
+#include "almond/editor/EditorCamera.h"
 #include "almond/rendering/Shader.h"
 #include "almond/rendering/Texture.h"
 
@@ -38,6 +39,8 @@ namespace Almond::Editor
         Scoped<IndexBuffer> m_ibo;
 
         Ref<Texture2D> m_Texture;
-        Ref<OrthographicCamera2D> m_Camera;
+        // Ref<OrthographicCamera2D> m_Camera;
+        Ref<EditorCamera> m_Camera;
+        Ref<EditorCameraController> m_CamController;
     };
 } // namespace Almond::Editor
