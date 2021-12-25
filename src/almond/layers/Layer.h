@@ -10,10 +10,8 @@ namespace Almond
     public:
         virtual ~Layer(){};
 
-        // virtual void OnCreate()  = 0;
-        // virtual void OnDestroy() = 0;
-        virtual void OnAttach() = 0;
-        virtual void OnDetach() = 0;
+        virtual void OnAttach() { };
+        virtual void OnDetach() { };
 
         /**
          * Receives an event and returns whether to propagate this event

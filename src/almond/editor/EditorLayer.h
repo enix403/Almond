@@ -7,12 +7,11 @@
 #include "almond/rendering/OrthographicCamera2D.h"
 #include "almond/rendering/Shader.h"
 #include "almond/rendering/Texture.h"
-#include "almond/ui/ImGuiLayer.h"
 
 namespace Almond::Editor
 {
 
-    class EditorLayer : public ImGuiLayer
+    class EditorLayer : public Layer
     {
     public:
         EditorLayer();

@@ -6,7 +6,6 @@
 
 namespace Almond
 {
-
     void ImGuiLayer::BeginFrame()
     {
         ImGui_ImplOpenGL3_NewFrame();

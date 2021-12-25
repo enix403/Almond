@@ -29,12 +29,15 @@ namespace Almond
 
     private:
         void OnEvent(const Events::Event& event);
+        void OnResize(const Events::WindowResizeEvent& event);
+
         void StartMainLoop();
 
     private:
         static Application* s_Instance;
 
         bool m_Running = false;
+        bool m_IsMinimized = false;
         Almond::Scoped<Window> m_MainWindow;
 
         LayerStack m_LayerStack;

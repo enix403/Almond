@@ -5,8 +5,6 @@
 
 #include "almond/core/base.h"
 
-#define BIND_CLASS_METHOD_HANDLER(klass, method) std::bind(&klass::method, this, std::placeholders::_1)
-
 namespace Almond::Events
 {
 
@@ -78,20 +76,20 @@ namespace Almond::Events
 
         template <typename T>
         // A function with signature bool (T &)
-        using EventReceiverFn = std::function<bool(T&)>;
+        using EventReceiverFn = std::function<bool(const T&)>;
 
     public:
-        explicit EventDispatcher(Event& event)
+        explicit EventDispatcher(const Event& event)
             : e(event)
         { }
-
-        template <typename T>
 
         /**
          * Calls the given function if the type of given event
          * is the same as the type provided in the template argument
          * and returns true, false otherwise
+         * 
          * */
+        template <typename T>
         bool Dispatch(EventReceiverFn<T> fn)
         {
             if(e.GetType() == T::GetStaticType())
@@ -103,7 +101,7 @@ namespace Almond::Events
         }
 
     private:
-        Event& e;
+        const Event& e;
     };
 
     /* ======================== Output event to stdout ======================== */

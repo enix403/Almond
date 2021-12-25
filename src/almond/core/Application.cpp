@@ -1,12 +1,14 @@
 #include "almond/core/Application.h"
 
+#include <functional>
+
 #include "almond/core/Logging.h"
+#include "almond/core/base.h"
 #include "almond/editor/EditorLayer.h"
 #include "almond/rendering/RenderAPI.h"
 #include "almond/ui/imgui_setup.h"
+#include "almond/ui/ImGuiLayer.h"
 #include "platform/linux/LinuxWindow.h"
-
-void HandleEvent(const Almond::Events::Event& e){};
 
 namespace Almond
 {
@@ -51,12 +53,20 @@ namespace Almond
         StartMainLoop();
     }
 
+    void Application::OnResize(const Events::WindowResizeEvent& event)
+    {
+        m_IsMinimized = event.GetWidth() == 0 || event.GetHeight() == 0;
+    }
+
     void Application::OnEvent(const Events::Event& event)
     {
         if(event.GetType() == Events::EventType::WindowClose)
         {
             m_Running = false;
             return;
+        }
+        else if (event.GetType() == Events::EventType::WindowResize) {
+            OnResize(static_cast<const Events::WindowResizeEvent&>(event));
         }
 
         for(auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
@@ -73,16 +83,21 @@ namespace Almond
         while(m_Running)
         {
             m_MainWindow->PollEvents();
-            for(const Ref<Layer>& layer : m_LayerStack)
+            if (!m_IsMinimized)
             {
-                layer->OnUpdate();
+                ImGuiLayer::BeginFrame();
+                for(const Ref<Layer>& layer : m_LayerStack)
+                {
+                    layer->OnUpdate();
+                }
+                ImGuiLayer::EndFrame();
             }
             m_MainWindow->SwapBuffers();
         }
 
-        for(const Ref<Layer>& layerRef : m_LayerStack)
+        for(const Ref<Layer>& layer : m_LayerStack)
         {
-            layerRef->OnDetach();
+            layer->OnDetach();
         }
 
         m_MainWindow->Close();

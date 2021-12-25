@@ -90,8 +90,9 @@ namespace Almond::Editor
         {
             const Events::WindowResizeEvent& we = static_cast<const Events::WindowResizeEvent&>(e);
             glViewport(0, 0, we.GetWidth(), we.GetHeight());
-            const auto& winRef = Application::Get()->GetMainWindow();
-            float winAspectRatio = (float)winRef.GetWidth() / winRef.GetHeight();
+            // const auto& winRef = Application::Get()->GetMainWindow();
+            // float winAspectRatio = (float)winRef.GetWidth() / winRef.GetHeight();
+            float winAspectRatio = (float)we.GetWidth() / we.GetHeight();
             m_Camera->Resize(winAspectRatio);
         }
 
@@ -118,8 +119,6 @@ namespace Almond::Editor
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-        BeginFrame();
-
         ImGui::Begin("Sheet View");
         ImGui::Text("Here goes the main grid....");
         ImGui::Text(
@@ -134,7 +133,6 @@ namespace Almond::Editor
         ImGui::NewLine();
 
         ImGui::End();
-        EndFrame();
     }
 
 #if 0

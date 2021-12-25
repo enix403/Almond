@@ -7,8 +7,11 @@ namespace Almond
 
     class ImGuiLayer : public Layer
     {
-    protected:
-        void BeginFrame();
-        void EndFrame();
+    private:
+        ImGuiLayer() {};
+
+    public:
+        static void BeginFrame();
+        static void EndFrame();
     };
 } // namespace Almond

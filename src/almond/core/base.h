@@ -23,3 +23,4 @@ namespace Almond
 } // namespace Almond
 
 #define BITMASK(x) (1 << (x))
+#define BIND_CLASS_METHOD_HANDLER(klass, method) std::bind(&klass::method, this, std::placeholders::_1)
