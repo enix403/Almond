@@ -2,7 +2,19 @@
 
 namespace Almond
 {
-    void LayerStack::PushLayer(const Ref<Layer>& layer)
+    LayerStack::LayerStack()
+    {}
+
+    LayerStack::~LayerStack()
+    {
+        for (Layer* layer : m_Layers)
+		{
+			layer->OnDetach();
+			delete layer;
+		}
+    }
+
+    void LayerStack::PushLayer(Layer* layer)
     {
 
         // TODO: Check if layer is already attached
@@ -11,7 +23,7 @@ namespace Almond
         layer->OnAttach();
     }
 
-    void LayerStack::PopLayer(const Ref<Layer>& layer)
+    void LayerStack::PopLayer(Layer* layer)
     {
         auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
         if(it != m_Layers.end())
@@ -21,4 +33,19 @@ namespace Almond
 
         layer->OnDetach();
     }
+
+    void LayerStack::PopAllLayers()
+    {
+        while (m_Layers.size() > 0)
+        {
+            auto layer = m_Layers[m_Layers.size() - 1];
+            m_Layers.pop_back();
+
+            layer->OnDetach();
+            delete layer;
+        }
+
+        m_Layers.clear();
+    }
+
 } // namespace Almond

@@ -8,7 +8,7 @@ namespace Almond
     class ImGuiLayer : public Layer
     {
     private:
-        ImGuiLayer() {};
+        ImGuiLayer() = delete;
 
     public:
         static void BeginFrame();

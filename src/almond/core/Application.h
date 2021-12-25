@@ -27,6 +27,8 @@ namespace Almond
             return *m_MainWindow;
         };
 
+        void Close();
+
     private:
         void OnEvent(const Events::Event& event);
         void OnResize(const Events::WindowResizeEvent& event);

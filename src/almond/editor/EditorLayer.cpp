@@ -19,9 +19,7 @@ namespace Almond::Editor
 {
     using namespace Almond;
 
-#define END_EDITOR_DOCK_SPACE() ImGui::End()
-
-    EditorLayer::EditorLayer()
+    EditorLayer::EditorLayer(): Layer("Editor Layer")
     {
         m_DockNodeFlags = ImGuiDockNodeFlags_None;
         // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
@@ -96,11 +94,6 @@ namespace Almond::Editor
         m_Texture = Texture2D::CreateFromFile("assets/textures/cosas.png");
         m_Texture->Bind(0);
 
-        // m_Texture = CreateRef<Texture2D>(1, 1, TexFormat::RGBA_8);
-        // uint8_t textureData[4] = { 0xff, 0xff, 0x00, 0xff };
-        // m_Texture->SetData(&textureData, sizeof(textureData));
-        // m_Texture->Bind(0);
-
         m_Shader = m_ShaderLibrary->LoadFromFile("DiffuseModel", "assets/shaders/DiffuseModel.glsl");
 
         m_Shader->Bind();
@@ -113,17 +106,9 @@ namespace Almond::Editor
 
     bool EditorLayer::OnEvent(const Events::Event& e)
     {
-        if(e.GetType() == Events::EventType::WindowResize)
-        {
-            // const Events::WindowResizeEvent& we = static_cast<const Events::WindowResizeEvent&>(e);
-            // glViewport(0, 0, we.GetWidth(), we.GetHeight());
-            // float winAspectRatio = (float)we.GetWidth() / we.GetHeight();
-            // m_Camera->SetAspectRatio(winAspectRatio);
-        }
-        else
-            m_CamController->OnEvent(e);
+        m_CamController->OnEvent(e);
 
-        return false;
+        return true;
     }
 
     void EditorLayer::OnUpdate()
@@ -143,15 +128,12 @@ namespace Almond::Editor
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         m_FrameBuffer->Unbind();
+    }
 
-        /* ========================================================================================= */
-        /* ========================================================================================= */
-        /* ========================================= IMGUI ========================================= */
-        /* ========================================================================================= */
-        /* ========================================================================================= */
-
-        ImGuiLayer::BeginFrame(); // TODO: Move to it's own ImGuiRender() method
+    void EditorLayer::OnImGuiRender()
+    {
         CreateDockSpace();
+        CreateMenuBar();
 
         ImGui::Begin("Sheet View");
         ImGui::Text("Here goes the main grid....");
@@ -165,37 +147,52 @@ namespace Almond::Editor
         ImGui::Begin("Scene Viewport");
         auto newViewportSize = ImGui::GetContentRegionAvail();
 
+        bool viewportFocused = ImGui::IsWindowFocused();
+        bool viewportHovered = ImGui::IsWindowHovered();
+        bool viewportDocked  = ImGui::IsWindowDocked();
+
+        // TODO: Maybe use a better approach 
+        m_CamController->SetBlocked(!viewportFocused || !viewportHovered || !viewportDocked);
+
         unsigned int textureId = m_FrameBuffer->GetColorAttachmentRendererId();
-        ImGui::Image((void*)textureId, 
-                    ImVec2 { m_ViewportSize.x, m_ViewportSize.y }, // size 
-                    { 0.f, 1.f }, // upper left UV
-                    { 1.f, 0.f} // bottom right UV
-                );
+        ImGui::Image(
+            (void*)textureId, 
+            ImVec2 { m_ViewportSize.x, m_ViewportSize.y }, // size 
+            { 0.f, 1.f }, // upper left UV
+            { 1.f, 0.f} // bottom right UV
+        );
 
         ImGui::End();
         ImGui::PopStyleVar();
 
         /* ======== */
 
-        END_EDITOR_DOCK_SPACE();
-        ImGuiLayer::EndFrame();
+        ImGui::End(); // For Dockspace
+
 
         if (newViewportSize.x != m_ViewportSize.x || newViewportSize.y != m_ViewportSize.y)
         {
             m_ViewportSize = { newViewportSize.x, newViewportSize.y };
-            // AD_CORE_LOG_WARN("Resizing Framebuffer to {0}, {1}", m_ViewportSize.x, m_ViewportSize.y);
-            m_FrameBuffer->Resize(m_ViewportSize.x, m_ViewportSize.y);
-
-            glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
-            float winAspectRatio = m_ViewportSize.x / m_ViewportSize.y;
-            m_Camera->SetAspectRatio(winAspectRatio);
+            m_ViewportSizeChanged = true;
         }
-
-        // ImGui::Text("Color:");
-        // ImGui::SameLine();
-        // ImGui::ColorEdit3("##color-edit-1", (float*)&color);
-
     }
+
+    void EditorLayer::OnPostImGuiRender()
+    {
+        // ImGui doesn't draw anything until the draw call is invoked by the Application class
+        // So we have to wait until the draw call to prevent dangling framebuffer reference before resizing 
+        // the framebuffer, which internally deletes the old instance and recreates a new one
+
+        if (m_ViewportSizeChanged)
+        {
+            m_ViewportSizeChanged = false;
+
+            m_FrameBuffer->Resize(m_ViewportSize.x, m_ViewportSize.y);
+            glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
+            m_Camera->SetAspectRatio(m_ViewportSize.x / m_ViewportSize.y);
+        }
+    }
+
 
     void EditorLayer::CreateDockSpace()
     {
@@ -213,8 +210,7 @@ namespace Almond::Editor
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("DockSpace Demo", NULL, m_MasterAreaFlags);
-        ImGui::PopStyleVar();
-        ImGui::PopStyleVar(2);
+        ImGui::PopStyleVar(3);
 
         // Submit the DockSpace
         ImGuiID dockspaceId = ImGui::GetID("MainDockSpace");
@@ -240,7 +236,8 @@ namespace Almond::Editor
                 ImGui::Separator();
 
                 ImGui::MenuItem("Preferences");
-                ImGui::MenuItem("Quit");
+                if (ImGui::MenuItem("Quit"))
+                    Application::Get()->Close();
 
                 ImGui::EndMenu();
             }
@@ -272,9 +269,6 @@ namespace Almond::Editor
             // ImGui::Separator();
 
             ImGui::EndMenuBar();
-            // ImGui::ShowDemoWindow();
         }
     }
-
-#undef END_EDITOR_DOCK_SPACE
-} // namespace Almond::Editor
+}

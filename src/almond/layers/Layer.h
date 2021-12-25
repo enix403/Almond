@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "almond/events/Event.h"
 
 namespace Almond
@@ -8,7 +10,10 @@ namespace Almond
     class Layer
     {
     public:
-        virtual ~Layer(){};
+        Layer(const std::string& name = "Layer")
+        : m_DebugName(name) {}
+
+		virtual ~Layer() = default;
 
         virtual void OnAttach() { };
         virtual void OnDetach() { };
@@ -17,12 +22,18 @@ namespace Almond
          * Receives an event and returns whether to propagate this event
          * to the layers below
          * */
-        virtual bool OnEvent(const Events::Event& e) = 0;
+        virtual bool OnEvent(const Events::Event& e) { return true; };
 
-        /**
-         * Called every frame
-         * */
-        virtual void OnUpdate() = 0;
+        virtual void OnUpdate() { };
+
+        virtual void OnImGuiRender() { };
+        virtual void OnPostImGuiRender() { };
+
+    public:
+        inline const std::string& GetDebugName() const { return m_DebugName; } 
+
+    private:
+        std::string m_DebugName;
     };
 
 } // namespace Almond

@@ -48,8 +48,6 @@ namespace Almond
         Almond::InitializeRenderApi_OpenGl();
         Almond::ImGuiManager::Initialize(*m_MainWindow);
 
-        m_LayerStack.PushLayer(CreateRef<Editor::EditorLayer>());
-
         StartMainLoop();
     }
 
@@ -62,7 +60,7 @@ namespace Almond
     {
         if(event.GetType() == Events::EventType::WindowClose)
         {
-            m_Running = false;
+            Close();
             return;
         }
         else if (event.GetType() == Events::EventType::WindowResize) {
@@ -78,27 +76,36 @@ namespace Almond
         }
     }
 
+    void Application::Close()
+    {
+        AD_CORE_LOG_INFO("Closing Almond");
+        m_Running = false;
+    }
+
     void Application::StartMainLoop()
     {
+        m_LayerStack.PushLayer(new Editor::EditorLayer());
+
         while(m_Running)
         {
             m_MainWindow->PollEvents();
             if (!m_IsMinimized)
             {
-                // ImGuiLayer::BeginFrame();
-                for(const Ref<Layer>& layer : m_LayerStack)
-                {
+                for(Layer* layer: m_LayerStack.LayersIter())
                     layer->OnUpdate();
-                }
-                // ImGuiLayer::EndFrame();
+                
+                ImGuiLayer::BeginFrame();
+                for(Layer* layer: m_LayerStack.LayersIter())
+                    layer->OnImGuiRender();
+                ImGuiLayer::EndFrame();
+
+                for(Layer* layer: m_LayerStack.LayersIter())
+                    layer->OnPostImGuiRender();
             }
             m_MainWindow->SwapBuffers();
         }
 
-        for(const Ref<Layer>& layer : m_LayerStack)
-        {
-            layer->OnDetach();
-        }
+        m_LayerStack.PopAllLayers();
 
         m_MainWindow->Close();
     }

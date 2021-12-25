@@ -88,6 +88,8 @@ namespace Almond
 
         void OnEvent(const Events::Event& event);
 
+        inline void SetBlocked(bool blocked) { m_IsBlocked = blocked; }
+
     private:
         void Rotate(float deltaX, float deltaY);
         void Pan(float deltaX, float deltaY);
@@ -97,6 +99,8 @@ namespace Almond
         Ref<EditorCamera> m_Camera;
 
         float_vec2 m_MouseLastPosition;
+        bool m_IsBlocked = false;
+
     };
 } // namespace Almond
 

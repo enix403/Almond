@@ -113,19 +113,19 @@ namespace Almond
             float deltaX = m_event.GetMouseX() - m_MouseLastPosition.x;
             float deltaY = m_event.GetMouseY() - m_MouseLastPosition.y;
 
-            if (Input::IsMouseButtonPressed(AD_MOUSE_BUTTON_LEFT))
+            if (Input::IsMouseButtonPressed(AD_MOUSE_BUTTON_LEFT) && !m_IsBlocked)
             {
                 if (Input::IsKeyPressed(AD_KEY_LEFT_SHIFT))
                     Pan(deltaX, deltaY);
-                else if (Input::IsKeyPressed(AD_KEY_LEFT_CONTROL))
-                // else
+                // else if (Input::IsKeyPressed(AD_KEY_LEFT_CONTROL))
+                else
                     Rotate(deltaX, deltaY);
             }
 
             m_MouseLastPosition.x = m_event.GetMouseX();
             m_MouseLastPosition.y = m_event.GetMouseY();
         }
-        else if(event.GetType() == EventType::MouseScroll)
+        else if(event.GetType() == EventType::MouseScroll && !m_IsBlocked)
         {
             const MouseScrollEvent& m_event = static_cast<const MouseScrollEvent&>(event);
             Zoom(m_event.GetScrollAmount() * 0.5f);

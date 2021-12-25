@@ -24,6 +24,9 @@ namespace Almond::Editor
 
         bool OnEvent(const Events::Event& e) override;
 
+        void OnImGuiRender() override;
+        void OnPostImGuiRender() override;
+
     private:
         void CreateDockSpace();
         void CreateMenuBar();
@@ -46,5 +49,8 @@ namespace Almond::Editor
         Scoped<Framebuffer> m_FrameBuffer;
 
         glm::vec2 m_ViewportSize { 0.f, 0.f };
+        bool m_ViewportSizeChanged = false;
+
+        // bool m_ViewportFocused = false, m_ViewportHovered = false;
     };
 } // namespace Almond::Editor
