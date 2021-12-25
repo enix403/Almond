@@ -9,7 +9,7 @@ Almond is an early stage simple and interactive 3D model editor. Not much is imp
 
 Almond is written in **C++17** and uses CMake as its build system. It is being developed primarily on Linux and is untested on other platforms such as Windows. It uses **OpenGL** as rendering backend.
 
-1. Start by cloning this repository and then run `git submodule update --init` to fetch the dependencies.
+1. Start by cloning this repository and then run `git submodule update --init --recursive --remote --recommend-shallow --depth 1 --progress` to fetch the dependencies.
 
 2. **Get the required stuff:**
 

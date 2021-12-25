@@ -38,7 +38,8 @@ namespace Almond::Editor
         m_vbo = CreateScoped<VertexBuffer>();
         m_ibo = CreateScoped<IndexBuffer>();
 
-        m_Texture = Texture2D::CreateFromFile("assets/textures/Logo1.jpg");
+        // m_Texture = Texture2D::CreateFromFile("assets/textures/Logo1.jpg");
+        m_Texture = Texture2D::CreateFromFile("assets/textures/monster.png");
 
         //  0.5f,  0.5f,  // top right
         //  0.5f, -0.5f,  // bottom right
