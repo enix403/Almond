@@ -12,6 +12,7 @@ set (
     "src/almond/ui/ImGuiLayer.cpp"
     "src/almond/rendering/RenderAPI.cpp"
     "src/almond/rendering/Shader.cpp"
+    "src/almond/rendering/Framebuffer.cpp"
     "src/almond/rendering/Texture.cpp"
     "src/almond/rendering/OrthographicCamera2D.cpp"
     "src/almond/editor/EditorLayer.cpp"

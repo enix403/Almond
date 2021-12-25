@@ -90,7 +90,7 @@ namespace Almond
 
     void EditorCameraController::Pan(float deltaX, float deltaY)
     {
-        float speed = 0.005f * m_Camera->GetRadius();
+        float speed = 0.001f * m_Camera->GetRadius();
 
         glm::vec3 translation = m_Camera->GetRightDirection() * deltaX + m_Camera->GetUpDirection() * -deltaY;
         m_Camera->TranslateFocusPoint(translation * -speed);
@@ -117,7 +117,8 @@ namespace Almond
             {
                 if (Input::IsKeyPressed(AD_KEY_LEFT_SHIFT))
                     Pan(deltaX, deltaY);
-                else
+                else if (Input::IsKeyPressed(AD_KEY_LEFT_CONTROL))
+                // else
                     Rotate(deltaX, deltaY);
             }
 

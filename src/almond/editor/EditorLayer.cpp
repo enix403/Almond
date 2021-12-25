@@ -35,22 +35,6 @@ namespace Almond::Editor
         m_Camera->SetClippingPlanes(0.01f, 100.0f);
         m_CamController = CreateRef<EditorCameraController>(m_Camera);
 
-      
-        m_Texture = Texture2D::CreateFromFile("assets/textures/monster.png");
-        m_Texture->Bind(0);
-
-        // m_Texture = CreateRef<Texture2D>(1, 1, TexFormat::RGBA_8);
-        // uint8_t textureData[4] = { 0xff, 0xff, 0x00, 0xff };
-        // m_Texture->SetData(&textureData, sizeof(textureData));
-        // m_Texture->Bind(0);
-
-        m_Shader = m_ShaderLibrary->LoadFromFile("DiffuseModel", "assets/shaders/DiffuseModel.glsl");
-
-        m_Shader->Bind();
-        m_Shader->SetUniformFloat3("u_Color", IRGB_TO_FRGB(174, 177, 189));
-        m_Shader->SetUniformInt("u_ShouldSampleTexture", 1);
-        m_Shader->SetUniformInt("u_Texture", 0); // the slot the texture is bound to
-
 
         m_vao = CreateScoped<VertexArray>();
         m_vbo = CreateScoped<VertexBuffer>();
@@ -98,7 +82,32 @@ namespace Almond::Editor
         glEnable(GL_DEPTH_TEST); // temp
     }
 
-    void EditorLayer::OnAttach() { }
+    void EditorLayer::OnAttach() 
+    {
+        {
+            FramebufferSpecification fbspec {};
+            fbspec.Width = 1280;
+            fbspec.Height = 720;
+
+            m_TestFrameBuffer = CreateScoped<Framebuffer>(fbspec);
+        }
+              
+        m_Texture = Texture2D::CreateFromFile("assets/textures/cosas.png");
+        m_Texture->Bind(0);
+
+        // m_Texture = CreateRef<Texture2D>(1, 1, TexFormat::RGBA_8);
+        // uint8_t textureData[4] = { 0xff, 0xff, 0x00, 0xff };
+        // m_Texture->SetData(&textureData, sizeof(textureData));
+        // m_Texture->Bind(0);
+
+        m_Shader = m_ShaderLibrary->LoadFromFile("DiffuseModel", "assets/shaders/DiffuseModel.glsl");
+
+        m_Shader->Bind();
+        m_Shader->SetUniformFloat3("u_Color", IRGB_TO_FRGB(174, 177, 189));
+        m_Shader->SetUniformInt("u_ShouldSampleTexture", 1);
+        m_Shader->SetUniformInt("u_Texture", 0); // the slot the texture is bound to
+    }
+
     void EditorLayer::OnDetach() { }
 
     bool EditorLayer::OnEvent(const Events::Event& e)
@@ -118,6 +127,7 @@ namespace Almond::Editor
 
     void EditorLayer::OnUpdate()
     {
+        m_TestFrameBuffer->Bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         m_vao->Bind();
@@ -131,39 +141,37 @@ namespace Almond::Editor
         m_Shader->SetUniformFloat3("u_DirectionToLight", glm::normalize(-m_Camera->GetFowardDirection()));
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        m_TestFrameBuffer->Unbind();
+
+        /* ========================================================================================= */
+        /* ========================================================================================= */
+        /* ========================================= IMGUI ========================================= */
+        /* ========================================================================================= */
+        /* ========================================================================================= */
+
+        CreateDockSpace();
 
         ImGui::Begin("Sheet View");
         ImGui::Text("Here goes the main grid....");
         ImGui::Text(
             "App average: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-        ImGui::NewLine();
+        unsigned int textureId = m_TestFrameBuffer->GetColorAttachmentRendererId();
+        ImGui::Image((void*)textureId, 
+                    ImVec2 { 1280.f, 720.f }, // size 
+                    { 0.f, 1.f }, // upper left UV
+                    { 1.f, 0.f} // bottom right UV
+                );
+
+        ImGui::End();
+
+        END_EDITOR_DOCK_SPACE();
 
         // ImGui::Text("Color:");
         // ImGui::SameLine();
         // ImGui::ColorEdit3("##color-edit-1", (float*)&color);
 
-        ImGui::NewLine();
-
-        ImGui::End();
     }
-
-#if 0
-    /*
-    BeginFrame();
-    CreateDockSpace();
-    CreateMenuBar();
-
-    ImGui::Begin("Sheet View");
-    ImGui::Text("Here goes the main grid....");
-    ImGui::End();
-   
-
-    END_EDITOR_DOCK_SPACE();
-    EndFrame();
-    */
-    // ImGui::ShowDemoWindow();
-#endif
 
     void EditorLayer::CreateDockSpace()
     {

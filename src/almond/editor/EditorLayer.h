@@ -8,6 +8,7 @@
 #include "almond/editor/EditorCamera.h"
 #include "almond/rendering/Shader.h"
 #include "almond/rendering/Texture.h"
+#include "almond/rendering/Framebuffer.h"
 
 namespace Almond::Editor
 {
@@ -39,8 +40,9 @@ namespace Almond::Editor
         Scoped<IndexBuffer> m_ibo;
 
         Ref<Texture2D> m_Texture;
-        // Ref<OrthographicCamera2D> m_Camera;
         Ref<EditorCamera> m_Camera;
         Ref<EditorCameraController> m_CamController;
+
+        Scoped<Framebuffer> m_TestFrameBuffer;
     };
 } // namespace Almond::Editor
