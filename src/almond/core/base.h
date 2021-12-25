@@ -7,7 +7,7 @@ namespace Almond
     using Scoped = std::unique_ptr<T>;
 
     template <typename T, typename... Args>
-    constexpr Scoped<T> CreateScoped(Args&&... args)
+    inline constexpr Scoped<T> CreateScoped(Args&&... args)
     {
         return std::make_unique<T>(std::forward<Args>(args)...);
     }
@@ -16,7 +16,7 @@ namespace Almond
     using Ref = std::shared_ptr<T>;
 
     template <typename T, typename... Args>
-    constexpr Ref<T> CreateRef(Args&&... args)
+    inline constexpr Ref<T> CreateRef(Args&&... args)
     {
         return std::make_shared<T>(std::forward<Args>(args)...);
     }

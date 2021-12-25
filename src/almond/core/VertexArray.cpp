@@ -65,7 +65,7 @@ namespace Almond
 
         int currentOffset = 0;
 
-        for(VLayoutElement elem : layout)
+        for (const VLayoutElement& elem : layout)
         {
             glEnableVertexAttribArray(elem.LayoutIndex);
             glVertexAttribPointer(elem.LayoutIndex,

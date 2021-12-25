@@ -73,9 +73,9 @@ namespace Almond
         while(m_Running)
         {
             m_MainWindow->PollEvents();
-            for(const Ref<Layer>& layerRef : m_LayerStack)
+            for(const Ref<Layer>& layer : m_LayerStack)
             {
-                layerRef->OnUpdate();
+                layer->OnUpdate();
             }
             m_MainWindow->SwapBuffers();
         }

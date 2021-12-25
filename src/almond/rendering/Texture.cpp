@@ -46,15 +46,15 @@ namespace Almond
             return;
         }
 
-        glTextureSubImage2D(m_TexID,
-                            0,
-                            0,
-                            0,
-                            m_Width,
-                            m_Height,
-                            source_format == TEX_FORMAT_RGBA ? GL_RGBA : GL_RGB,
-                            GL_UNSIGNED_BYTE,
-                            data);
+        glTextureSubImage2D(
+            m_TexID,
+            0,
+            0, 0,
+            m_Width, m_Height,
+            source_format == TEX_FORMAT_RGBA ? GL_RGBA : GL_RGB,
+            GL_UNSIGNED_BYTE,
+            data
+        );
     }
 
     // ===============================
