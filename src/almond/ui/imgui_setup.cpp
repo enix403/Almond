@@ -5,8 +5,9 @@
 #include <string>
 
 #include <imgui/imgui.h>
-#include <thirdparty/imgui_impl/imgui_impl_glfw.h>
-#include <thirdparty/imgui_impl/imgui_impl_opengl3.h>
+
+#include <imgui/backends/imgui_impl_opengl3.h>
+#include <imgui/backends/imgui_impl_glfw.h>
 
 static void SetDarkTheme();
 static void SetLightTheme();

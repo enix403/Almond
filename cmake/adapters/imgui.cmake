@@ -6,6 +6,9 @@ add_library(
     "vendor/DearImGui/imgui/imgui_draw.cpp"
     "vendor/DearImGui/imgui/imgui_tables.cpp"
     "vendor/DearImGui/imgui/imgui_widgets.cpp"
+
+    "src/thirdparty/ImGuiBuild.cpp"
 )
 
 target_include_directories(imgui PUBLIC vendor/DearImGui)
+target_include_directories(imgui PUBLIC vendor/DearImGui/imgui)

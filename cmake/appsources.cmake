@@ -18,7 +18,4 @@ set (
     "src/almond/editor/EditorCamera.cpp"
     "src/platform/linux/LinuxWindow.cpp"
     "src/platform/linux/LinuxInput.cpp"
-
-    "src/thirdparty/imgui_impl/imgui_impl_glfw.cpp"
-    "src/thirdparty/imgui_impl/imgui_impl_opengl3.cpp"
 )
