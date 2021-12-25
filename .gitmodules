@@ -11,3 +11,8 @@
 	path = vendor/GLM
 	url = https://github.com/g-truc/glm.git
 	shallow = true
+[submodule "vendor/DearImGui/imgui"]
+	path = vendor/DearImGui/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
+	shallow = true
