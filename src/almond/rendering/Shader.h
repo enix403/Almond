@@ -56,10 +56,10 @@ namespace Almond
         void SetUniformMat4(const std::string& name, const glm::mat4& value);
 
     private:
-        int GetUniformLocation(const std::string& uniformName);
+        int GetUniformLocation(const std::string& uniformName) const;
 
     private:
-        std::unordered_map<std::string, int> m_UniformLocationCache;
+        mutable std::unordered_map<std::string, int> m_UniformLocationCache;
         uint m_ProgramID;
         std::string m_Name;
     };

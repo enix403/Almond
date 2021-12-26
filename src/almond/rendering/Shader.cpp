@@ -126,7 +126,7 @@ namespace Almond
         glUseProgram(0);
     }
 
-    int Shader::GetUniformLocation(const std::string& uniformName)
+    int Shader::GetUniformLocation(const std::string& uniformName) const
     {
         if(m_UniformLocationCache.find(uniformName) != m_UniformLocationCache.end())
         {

@@ -99,7 +99,7 @@ namespace Almond
     void EditorCameraController::Zoom(float amount)
     {
         // Zoom
-        constexpr float speed = 0.1f;
+        constexpr float speed = 0.3f;
         float newRadius = std::clamp(m_Camera->GetRadius() - amount * speed, 0.1f, CAMERA_ARCBALL_MAX_RADIUS);
         m_Camera->SetRadius(newRadius);
     }

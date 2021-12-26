@@ -88,6 +88,11 @@ namespace Almond::Editor
             m_ViewportSize.x = fbspec.Width = 1280;
             m_ViewportSize.y = fbspec.Height = 720;
 
+            fbspec.Attachments = {
+                FBTextureFormat::RGBA_8,
+                FBTextureFormat::Depth
+            };
+
             m_FrameBuffer = CreateScoped<Framebuffer>(fbspec);
         }
 
@@ -154,7 +159,7 @@ namespace Almond::Editor
         // TODO: Maybe use a better approach 
         m_CamController->SetBlocked(!viewportFocused || !viewportHovered || !viewportDocked);
 
-        unsigned int textureId = m_FrameBuffer->GetColorAttachmentRendererId();
+        unsigned int textureId = m_FrameBuffer->GetColorAttachmentRendererId(0);
         ImGui::Image(
             (void*)textureId, 
             ImVec2 { m_ViewportSize.x, m_ViewportSize.y }, // size 

@@ -2,24 +2,57 @@
 
 #include "almond/core/base.h"
 
+#include <initializer_list>
+#include <vector>
+
 namespace Almond {
+    
+    enum class FBTextureFormat
+    {
+        // R_8, RG_8, RGB_8,
+        None = 0,
+        RGBA_8,
+        DEPTH_24_STENCIL_8,
+        Depth = DEPTH_24_STENCIL_8
+    };
 
-    // enum FBAttachmentType
-    // {
-    //     ColorAttachment, DepthAttachment, StencilAttachment
-    // };
 
-    // struct FBAttachment
-    // {
-    //     uint32_t RendererId;
-    //     FBAttachmentType Type;
-    //     uint32_t Width, Height;
-    // };
+
+    enum class FBTextureFilterMode: uint8_t
+    {
+        // The first 2 bytes (mask 0x03) contain minification filter
+        // and the second 2 bytes (mask 0x0C) contain magnification filter
+        // For now LINEAR = 1 and REPEAT = 2
+        MIN_LINEAR_MAX_LINEAR = (1 << 0) | (1 << 2),
+        MIN_LINEAR_MAX_REPEAT = (1 << 0) | (2 << 2),
+        MIN_REPEAT_MAX_LINEAR = (2 << 0) | (1 << 2),
+        MIN_REPEAT_MAX_REPEAT = (2 << 0) | (2 << 2),
+    };
+
+    struct FBTextureSpecification
+    {
+    public:
+        FBTextureSpecification() = default;
+        FBTextureSpecification(FBTextureFormat textureFormat)
+        : TextureFormat(textureFormat)
+        {}
+
+        FBTextureSpecification(FBTextureFormat textureFormat, FBTextureFilterMode filterMode)
+        : TextureFormat(textureFormat), FilterMode(filterMode)
+        {}
+
+    public:
+        FBTextureFormat TextureFormat = FBTextureFormat::None;
+        FBTextureFilterMode FilterMode = FBTextureFilterMode::MIN_LINEAR_MAX_LINEAR;
+    };
+    using FBAttachmentsSpecification = std::vector<FBTextureSpecification>;
+
 
     struct FramebufferSpecification
     {
         uint32_t Width, Height;
-        int SampleCount = 1;
+        // int SampleCount = 1;
+        FBAttachmentsSpecification Attachments;
     };
 
     class Framebuffer
@@ -30,8 +63,9 @@ namespace Almond {
         ~Framebuffer();
 
         inline const FramebufferSpecification& GetSpecification() const { return m_Spec; }
+        inline FramebufferSpecification& GetSpecification() { return m_Spec; }
 
-        inline auto GetColorAttachmentRendererId() const { return m_ColorAttachment; }
+        inline auto GetColorAttachmentRendererId(int index = 0) const { return m_ColorAttachmentIds[index]; }
 
         void Bind();
         void Unbind();
@@ -43,6 +77,11 @@ namespace Almond {
         uint32_t m_FBId = 0;
         FramebufferSpecification m_Spec;
 
-        uint32_t m_ColorAttachment, m_DepthAttachment;
+        // We support multiple color attachments but only one (optional) depth attachment
+        std::vector<FBTextureSpecification> m_ColorAttachmentSpecs;
+        std::vector<uint32_t> m_ColorAttachmentIds;
+
+        FBTextureSpecification m_DepthAttachmentSpec { FBTextureFormat::None };
+        uint32_t m_DepthAttachmentId = 0;
     };
 }
