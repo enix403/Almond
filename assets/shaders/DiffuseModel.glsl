@@ -40,6 +40,7 @@ in vec3 fragNormal;
 in vec2 texCoords;
 
 layout (location = 0) out vec4 fragColor;
+layout (location = 1) out int entityID;
 
 void main()
 {   
@@ -52,4 +53,5 @@ void main()
         fragSampleColor = u_Color * lightIntensity;
         
     fragColor = vec4(fragSampleColor, 1.0);
+    entityID = 43;
 }

@@ -108,6 +108,8 @@ namespace Almond {
                 switch (attachment.TextureFormat) {
                     case FBTextureFormat::RGBA_8:
                         utils::AttachColorTexture(i, texId, GL_RGBA8, m_Spec.Width, m_Spec.Height, m_Spec.SampleCount);
+                    case FBTextureFormat::RED_I32:
+                        utils::AttachColorTexture(i, texId, GL_R32I, m_Spec.Width, m_Spec.Height, m_Spec.SampleCount);
 
                     default:
                         break;
@@ -172,6 +174,15 @@ namespace Almond {
     void Framebuffer::Unbind()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    int Framebuffer::ReadPixelInt(int attachmentIndex, int x, int y)
+    {
+        // TODO: Check if attachment is valid
+        glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+        int pixelData;
+        glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+        return pixelData;
     }
 
 }

@@ -37,7 +37,7 @@ namespace Almond::Events
     {                                                                                                                  \
         return eventType;                                                                                              \
     }                                                                                                                  \
-    inline static EventType GetStaticEventType()                                                                       \
+    inline static EventType GetStaticType()                                                                       \
     {                                                                                                                  \
         return eventType;                                                                                              \
     }                                                                                                                  \
@@ -57,7 +57,7 @@ namespace Almond::Events
     {
     public:
         virtual EventType GetType() const = 0;
-        static EventType GetStaticEventType();
+        static EventType GetStaticType();
         virtual const char* GetName() const = 0;
 
         virtual std::string ToString() const
@@ -74,13 +74,13 @@ namespace Almond::Events
     class EventDispatcher
     {
 
-        template <typename T>
         // A function with signature bool (T &)
-        using EventReceiverFn = std::function<bool(const T&)>;
+        // template <typename T>
+        // using EventReceiverFn = std::function<void(const T&)>;
 
     public:
         explicit EventDispatcher(const Event& event)
-            : e(event)
+            : m_Event(event)
         { }
 
         /**
@@ -89,19 +89,19 @@ namespace Almond::Events
          * and returns true, false otherwise
          * 
          * */
-        template <typename T>
-        bool Dispatch(EventReceiverFn<T> fn)
+        template <typename E, typename FuncType>
+        bool Dispatch(const FuncType& fn)
         {
-            if(e.GetType() == T::GetStaticType())
+            if(m_Event.GetType() == E::GetStaticType())
             {
-                fn(e);
+                fn(static_cast<const E&>(m_Event));
                 return true;
             }
             return false;
         }
 
     private:
-        const Event& e;
+        const Event& m_Event;
     };
 
     /* ======================== Output event to stdout ======================== */

@@ -24,4 +24,5 @@ namespace Almond
 } // namespace Almond
 
 #define BITMASK(x) (1 << (x))
-#define BIND_CLASS_METHOD_HANDLER(klass, method) std::bind(&klass::method, this, std::placeholders::_1)
+#define AD_BIND_EVENT_METHOD(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
+

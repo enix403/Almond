@@ -71,7 +71,7 @@ static inline ImVec4 ColorFromIntRGB(int r, int g, int b)
     return {r / 255.0f, g / 255.0f, b / 255.0f, 1.0f};
 }
 
-#if 0
+#if 1
 inline static int BackGroundColor = 0x25213100;
 inline static int TextColor = 0xF4F1DE00;
 inline static int MainColor = 0xDA115E00;
@@ -153,7 +153,7 @@ static void SetDarkTheme()
     colors[ImGuiCol_TitleBgCollapsed]    = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 #endif
 
-#if 1 // Style 2
+#if 0 // Style 2
     // the first good blue
     colors[ImGuiCol_Text] = ImVec4(0.95f, 0.96f, 0.98f, 1.00f);
     colors[ImGuiCol_TextDisabled] = ImVec4(0.36f, 0.42f, 0.47f, 1.00f);
@@ -316,7 +316,7 @@ static void SetDarkTheme()
     colors[ImGuiCol_NavWindowingHighlight]   =  ImVec4(0.70f, 0.70f, 0.70f, 0.70f);
 #endif
 
-#if 0 // Style 4
+#if 1 // Style 4
     // Another dark (with orange drop targets)
     colors[ImGuiCol_Text]                   = ImVec4(1.000f, 1.000f, 1.000f, 1.000f);
     colors[ImGuiCol_TextDisabled]           = ImVec4(0.500f, 0.500f, 0.500f, 1.000f);

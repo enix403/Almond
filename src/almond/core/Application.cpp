@@ -10,10 +10,8 @@
 #include "almond/ui/imgui_setup.h"
 #include "almond/ui/ImGuiLayer.h"
 #include "platform/linux/LinuxWindow.h"
+#include "almond/events/keyboard_events.h"
 
-#include <GLFW/glfw3.h>
-
-// double glfwGetTime();
 namespace chrono = std::chrono;
 
 namespace Almond
@@ -47,7 +45,7 @@ namespace Almond
         Almond::WindowCreationProps props = {1280, 700, "Almond Editor", false};
 
         m_MainWindow = Almond::CreateScoped<Almond::LinuxWindow>();
-        m_MainWindow->SetEventCallback(BIND_CLASS_METHOD_HANDLER(Application, OnEvent));
+        m_MainWindow->SetEventCallback(AD_BIND_EVENT_METHOD(Application::OnEvent));
         m_MainWindow->Initialize(props);
         m_MainWindow->SetVSync(true);
 
@@ -69,10 +67,12 @@ namespace Almond
             Close();
             return;
         }
-        else if (event.GetType() == Events::EventType::WindowResize) {
-            OnResize(static_cast<const Events::WindowResizeEvent&>(event));
-        }
 
+        {
+            Events::EventDispatcher dispatcher(event);
+            dispatcher.Dispatch<Events::WindowResizeEvent>(AD_BIND_EVENT_METHOD(Application::OnResize));
+        }
+        
         for(auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
         {
             it--;

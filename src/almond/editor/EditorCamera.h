@@ -100,7 +100,6 @@ namespace Almond
 
         float_vec2 m_MouseLastPosition;
         bool m_IsBlocked = false;
-
     };
 } // namespace Almond
 

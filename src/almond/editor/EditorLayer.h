@@ -51,6 +51,9 @@ namespace Almond::Editor
         glm::vec2 m_ViewportSize { 0.f, 0.f };
         bool m_ViewportSizeChanged = false;
 
-        // bool m_ViewportFocused = false, m_ViewportHovered = false;
+        // Relative to the top left of OS Window
+        glm::vec2 m_VpMinBounds;
+        // glm::vec2 m_VpMaxBounds;
+
     };
 } // namespace Almond::Editor

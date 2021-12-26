@@ -72,6 +72,7 @@ namespace Almond {
         void Invalidate();
         void Resize(uint32_t width, uint32_t height);
         
+        int ReadPixelInt(int attachmentIndex, int x, int y);
 
     private:
         uint32_t m_FBId = 0;

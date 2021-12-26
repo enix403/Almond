@@ -104,6 +104,7 @@ namespace Almond
         m_Camera->SetRadius(newRadius);
     }
 
+
     void EditorCameraController::OnEvent(const Events::Event& event)
     {
         if(event.GetType() == EventType::MouseMove)
@@ -112,14 +113,17 @@ namespace Almond
 
             float deltaX = m_event.GetMouseX() - m_MouseLastPosition.x;
             float deltaY = m_event.GetMouseY() - m_MouseLastPosition.y;
-
-            if (Input::IsMouseButtonPressed(AD_MOUSE_BUTTON_LEFT) && !m_IsBlocked)
+            
+            if ((glm::abs(deltaX) + glm::abs(deltaY)) > 2)
             {
-                if (Input::IsKeyPressed(AD_KEY_LEFT_SHIFT))
-                    Pan(deltaX, deltaY);
-                // else if (Input::IsKeyPressed(AD_KEY_LEFT_CONTROL))
-                else
-                    Rotate(deltaX, deltaY);
+                if (Input::IsMouseButtonPressed(AD_MOUSE_BUTTON_LEFT) && !m_IsBlocked)
+                {
+                    if (Input::IsKeyPressed(AD_KEY_LEFT_SHIFT))
+                        Pan(deltaX, deltaY);
+                    // else if (Input::IsKeyPressed(AD_KEY_LEFT_CONTROL))
+                    else
+                        Rotate(deltaX, deltaY);
+                }
             }
 
             m_MouseLastPosition.x = m_event.GetMouseX();

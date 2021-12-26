@@ -10,14 +10,16 @@
 
 #include "almond/core/Application.h"
 #include "almond/core/Logging.h"
-#include "almond/events/window_events.h"
 #include "almond/ui/ImGuiLayer.h"
+#include "almond/events/window_events.h"
+#include "almond/events/mouse_events.h"
 
 #include "almond/utils/colors.h"
 
 namespace Almond::Editor
 {
     using namespace Almond;
+    using namespace Almond::Events;
 
     EditorLayer::EditorLayer(): Layer("Editor Layer")
     {
@@ -91,6 +93,7 @@ namespace Almond::Editor
 
             fbspec.Attachments = {
                 FBTextureFormat::RGBA_8,
+                FBTextureFormat::RED_I32,
                 FBTextureFormat::Depth
             };
 
@@ -114,6 +117,21 @@ namespace Almond::Editor
     {
         m_CamController->OnEvent(e);
 
+        EventDispatcher dispatcher(e);
+        dispatcher.Dispatch<MouseReleaseEvent>([this](const MouseReleaseEvent& event) {
+            auto mousePosAbsolute = ImGui::GetMousePos();
+            auto vpMouseX = mousePosAbsolute.x - m_VpMinBounds.x;
+            auto vpMouseY = m_ViewportSize.y - (mousePosAbsolute.y - m_VpMinBounds.y);
+
+            if (vpMouseX >= 0 && vpMouseX <= m_ViewportSize.x && vpMouseY >= 0 && vpMouseY <= m_ViewportSize.y)
+            {
+                m_FrameBuffer->Bind();
+                int objectId = m_FrameBuffer->ReadPixelInt(1, vpMouseX, vpMouseY);
+                m_FrameBuffer->Unbind();
+                AD_CORE_LOG_TRACE("Mouse Object ID = {0}", objectId);
+            }
+        });
+
         return true;
     }
 
@@ -133,6 +151,7 @@ namespace Almond::Editor
         m_Shader->SetUniformFloat3("u_DirectionToLight", glm::normalize(-m_Camera->GetFowardDirection()));
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
         m_FrameBuffer->Unbind();
     }
 
@@ -147,18 +166,28 @@ namespace Almond::Editor
             "App average: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::End();
 
+        ImGui::Begin("Some Panel");
+        ImGui::Text("Empty 1");
+        ImGui::End();
+
+        ImGui::Begin("Cool Panel");
+        ImGui::Text("Empty 2");
+        ImGui::End();
+
         /* ================= Scene Viewport ================= */
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.f, 0.f });
         ImGui::Begin("Scene Viewport");
-        auto newViewportSize = ImGui::GetContentRegionAvail();
-
-        bool viewportFocused = ImGui::IsWindowFocused();
-        bool viewportHovered = ImGui::IsWindowHovered();
-        bool viewportDocked  = ImGui::IsWindowDocked();
+        auto newViewportSize = ImGui::GetContentRegionAvail(); // Size of window without the tab bar (draw area)
+        
+        // Offset of viewport relative to the topleft of current (scene's) ImGui window.
+        // Also equal to (0, tab bar size)
+        // 
+        // Note: It must be called before drawing anything in this ImGui window
+        auto viewportOffset = ImGui::GetCursorPos();
 
         // TODO: Maybe use a better approach 
-        m_CamController->SetBlocked(!viewportFocused || !viewportHovered || !viewportDocked);
+        m_CamController->SetBlocked(!ImGui::IsWindowFocused() || !ImGui::IsWindowHovered() || !ImGui::IsWindowDocked());
 
         unsigned int textureId = m_FrameBuffer->GetColorAttachmentRendererId(0);
         ImGui::Image(
@@ -167,6 +196,11 @@ namespace Almond::Editor
             { 0.f, 1.f }, // upper left UV
             { 1.f, 0.f} // bottom right UV
         );
+
+        // Position (top left) of this ImGui window relative to OS window. Includes the tab bar
+        auto windowOffsetApp = ImGui::GetWindowPos(); 
+
+        m_VpMinBounds = { windowOffsetApp.x + viewportOffset.x, windowOffsetApp.y + viewportOffset.y };
 
         ImGui::End();
         ImGui::PopStyleVar();
