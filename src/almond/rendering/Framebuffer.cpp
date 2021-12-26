@@ -81,10 +81,14 @@ namespace Almond {
                     break;
             }
 
-            auto filterMode = static_cast<std::underlying_type_t<FBTextureFilterMode>>(attachment.FilterMode);
+            auto texId = m_ColorAttachmentIds[i];
 
-            glTextureParameteri(m_ColorAttachmentIds[i], GL_TEXTURE_MIN_FILTER, utils::OpenGLFilter(filterMode) & 0x03 >> 0);
-            glTextureParameteri(m_ColorAttachmentIds[i], GL_TEXTURE_MAG_FILTER, utils::OpenGLFilter(filterMode) & 0x0C >> 2);
+            glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            glTextureParameteri(texId, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+            glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, m_ColorAttachmentIds[i], 0);
         }

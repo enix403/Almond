@@ -18,17 +18,6 @@ namespace Almond {
 
 
 
-    enum class FBTextureFilterMode: uint8_t
-    {
-        // The first 2 bytes (mask 0x03) contain minification filter
-        // and the second 2 bytes (mask 0x0C) contain magnification filter
-        // For now LINEAR = 1 and REPEAT = 2
-        MIN_LINEAR_MAX_LINEAR = (1 << 0) | (1 << 2),
-        MIN_LINEAR_MAX_REPEAT = (1 << 0) | (2 << 2),
-        MIN_REPEAT_MAX_LINEAR = (2 << 0) | (1 << 2),
-        MIN_REPEAT_MAX_REPEAT = (2 << 0) | (2 << 2),
-    };
-
     struct FBTextureSpecification
     {
     public:
@@ -37,13 +26,9 @@ namespace Almond {
         : TextureFormat(textureFormat)
         {}
 
-        FBTextureSpecification(FBTextureFormat textureFormat, FBTextureFilterMode filterMode)
-        : TextureFormat(textureFormat), FilterMode(filterMode)
-        {}
-
     public:
         FBTextureFormat TextureFormat = FBTextureFormat::None;
-        FBTextureFilterMode FilterMode = FBTextureFilterMode::MIN_LINEAR_MAX_LINEAR;
+        // TODO: Add filtering and wrapping options
     };
     using FBAttachmentsSpecification = std::vector<FBTextureSpecification>;
 
