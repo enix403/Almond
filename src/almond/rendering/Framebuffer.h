@@ -13,6 +13,7 @@ namespace Almond {
     {
         // R_8, RG_8, RGB_8,
         None = 0,
+        RED_I32,
         RGBA_8,
         DEPTH_24_STENCIL_8,
         Depth = DEPTH_24_STENCIL_8
@@ -50,7 +51,7 @@ namespace Almond {
     struct FramebufferSpecification
     {
         uint32_t Width, Height;
-        // int SampleCount = 1;
+        int SampleCount = 1;
         FBAttachmentsSpecification Attachments;
     };
 

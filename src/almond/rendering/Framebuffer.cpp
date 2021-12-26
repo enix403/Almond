@@ -23,6 +23,33 @@ namespace {
             // Very, VERY temporary
             return value == 1 ? GL_LINEAR : GL_REPEAT;
         }
+        
+        inline constexpr GLenum TextureTarget(bool multisampled)
+        {
+            return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+        }
+
+        inline void AttachColorTexture(int index, uint32_t texId, GLenum internalFormat, uint32_t width, uint32_t height, int samples)
+        {
+            bool multisampled = samples > 1;
+            if (multisampled)
+                glTextureStorage2DMultisample(texId, samples, internalFormat, width, height, GL_FALSE);
+            else 
+                glTextureStorage2D(texId, 1, internalFormat, width, height);
+
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(multisampled), texId, 0);
+        }
+
+        inline void AttachSingularTexture(uint32_t texId, GLenum internalFormat, GLenum attachmentType, uint32_t width, uint32_t height, int samples)
+        {
+            bool multisampled = samples > 1;
+            if (multisampled)
+                glTextureStorage2DMultisample(texId, samples, internalFormat, width, height, GL_FALSE);
+            else 
+                glTextureStorage2D(texId, 1, internalFormat, width, height);
+            
+            glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, TextureTarget(multisampled), texId, 0);
+        }
     }
 }
 
@@ -68,40 +95,36 @@ namespace Almond {
         glCreateFramebuffers(1, &m_FBId);
         glBindFramebuffer(GL_FRAMEBUFFER, m_FBId);
 
-        glCreateTextures(GL_TEXTURE_2D, m_ColorAttachmentIds.size(), m_ColorAttachmentIds.data());
-        for (int i = 0; i < m_ColorAttachmentSpecs.size(); i++)
+        bool multisampled = m_Spec.SampleCount > 1;
+
+        if (m_ColorAttachmentSpecs.size())
         {
-            const auto& attachment = m_ColorAttachmentSpecs[i];
+            glCreateTextures(utils::TextureTarget(multisampled), m_ColorAttachmentIds.size(), m_ColorAttachmentIds.data());
+            for (int i = 0; i < m_ColorAttachmentSpecs.size(); i++)
+            {
+                const auto& attachment = m_ColorAttachmentSpecs[i];
+                auto texId = m_ColorAttachmentIds[i];
 
-            switch (attachment.TextureFormat) {
-                case FBTextureFormat::RGBA_8:
-                    glTextureStorage2D(m_ColorAttachmentIds[i], 1, GL_RGBA8, m_Spec.Width, m_Spec.Height);
+                switch (attachment.TextureFormat) {
+                    case FBTextureFormat::RGBA_8:
+                        utils::AttachColorTexture(i, texId, GL_RGBA8, m_Spec.Width, m_Spec.Height, m_Spec.SampleCount);
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
+
+                Texture2D::ConfigureParams(texId, attachment.FilterDescription, attachment.WrapDescription);
             }
-
-            auto texId = m_ColorAttachmentIds[i];
-
-            // glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            // glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-            // glTextureParameteri(texId, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-            // glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            // glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            Texture2D::ConfigureParams(texId, attachment.FilterDescription, attachment.WrapDescription);
-
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, m_ColorAttachmentIds[i], 0);
         }
 
         if (m_DepthAttachmentSpec.TextureFormat != FBTextureFormat::None)
         {
-            glCreateTextures(GL_TEXTURE_2D, 1, &m_DepthAttachmentId);
+            glCreateTextures(utils::TextureTarget(multisampled), 1, &m_DepthAttachmentId);
 
             switch (m_DepthAttachmentSpec.TextureFormat) {
-                case FBTextureFormat::DEPTH_24_STENCIL_8: 
-                    glTextureStorage2D(m_DepthAttachmentId, 1, GL_DEPTH24_STENCIL8, m_Spec.Width, m_Spec.Height);
-                    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_DepthAttachmentId, 0);
+                case FBTextureFormat::DEPTH_24_STENCIL_8:
+                    utils::AttachSingularTexture(m_DepthAttachmentId, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, 
+                        m_Spec.Width, m_Spec.Height, m_Spec.SampleCount);
 
                 default:
                     break;

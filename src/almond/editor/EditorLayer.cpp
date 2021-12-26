@@ -87,6 +87,7 @@ namespace Almond::Editor
             FramebufferSpecification fbspec {};
             m_ViewportSize.x = fbspec.Width = 1280;
             m_ViewportSize.y = fbspec.Height = 720;
+            fbspec.SampleCount = 1; // Cannot use multisampled framebuffer. It needs some extra work to display on screen
 
             fbspec.Attachments = {
                 FBTextureFormat::RGBA_8,
