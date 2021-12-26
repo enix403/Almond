@@ -83,12 +83,13 @@ namespace Almond {
 
             auto texId = m_ColorAttachmentIds[i];
 
-            glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            // glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            // glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-            glTextureParameteri(texId, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            // glTextureParameteri(texId, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+            // glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            // glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            Texture2D::ConfigureParams(texId, attachment.FilterDescription, attachment.WrapDescription);
 
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, m_ColorAttachmentIds[i], 0);
         }

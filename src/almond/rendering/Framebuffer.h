@@ -5,6 +5,8 @@
 #include <initializer_list>
 #include <vector>
 
+#include "almond/rendering//Texture.h"
+
 namespace Almond {
     
     enum class FBTextureFormat
@@ -16,20 +18,32 @@ namespace Almond {
         Depth = DEPTH_24_STENCIL_8
     };
 
-
-
     struct FBTextureSpecification
     {
     public:
         FBTextureSpecification() = default;
+
         FBTextureSpecification(FBTextureFormat textureFormat)
-        : TextureFormat(textureFormat)
+        :   TextureFormat(textureFormat)
+        {}
+
+        FBTextureSpecification(FBTextureFormat textureFormat, uint8_t filterDesc, uint16_t wrapDesc)
+        :   TextureFormat(textureFormat),
+            FilterDescription(filterDesc),
+            WrapDescription(wrapDesc)
         {}
 
     public:
         FBTextureFormat TextureFormat = FBTextureFormat::None;
-        // TODO: Add filtering and wrapping options
+
+        TextureFilterDescription FilterDescription = TEX_FILTER_MIN(TEX_FILTER_MODE_LINEAR) 
+                                                    | TEX_FILTER_MAG(TEX_FILTER_MODE_LINEAR);
+
+        TextureWrapDescription WrapDescription = TEX_WRAP_R(TEX_WRAP_MODE_CLAMP_EDGE)
+                                                | TEX_WRAP_S(TEX_WRAP_MODE_CLAMP_EDGE)
+                                                | TEX_WRAP_T(TEX_WRAP_MODE_CLAMP_EDGE);
     };
+
     using FBAttachmentsSpecification = std::vector<FBTextureSpecification>;
 
 
