@@ -67,9 +67,7 @@ namespace Almond
         Texture2D(
             u32 width,
             u32 height,
-            TexFormat format,
-            TextureFilterDescription filterDesc = 0,
-            TextureWrapDescription wrapDesc = 0
+            TexFormat format
         );
         ~Texture2D();
 
@@ -85,6 +83,9 @@ namespace Almond
             SetData(0, 0, m_Width, m_Height, data, size);
         }
         void SetData(int x, int y, int width, int height, const void* data, u32 size);
+
+        void SetFilteringMode(TextureFilterDescription filterDesc);
+        void SetWrappingMode(TextureWrapDescription wrapDesc);
 
     public:
         static void ConfigureParams(uint textureId, TextureFilterDescription filterDesc, TextureWrapDescription wrapDesc);

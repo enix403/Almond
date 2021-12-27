@@ -4,7 +4,7 @@
 #include "almond/core/VertexArray.h"
 #include "almond/core/base.h"
 #include "almond/layers/Layer.h"
-// #include "almond/rendering/OrthographicCamera2D.h"
+#include "almond/rendering/Entity.h"
 #include "almond/editor/EditorCamera.h"
 #include "almond/rendering/Shader.h"
 #include "almond/rendering/Texture.h"
@@ -31,6 +31,9 @@ namespace Almond::Editor
         void CreateDockSpace();
         void CreateMenuBar();
 
+        // TODO: Temporary. Will be moved to its own "Scene" system
+        void DrawEntity(const Entity& entity);
+
     private:
         int m_MasterAreaFlags;
         int m_DockNodeFlags;
@@ -38,9 +41,9 @@ namespace Almond::Editor
         Scoped<ShaderLibrary> m_ShaderLibrary;
         Ref<Shader> m_Shader;
 
-        Scoped<VertexArray> m_vao;
-        Scoped<VertexBuffer> m_vbo;
-        Scoped<IndexBuffer> m_ibo;
+        // Scoped<VertexArray> m_vao;
+        // Scoped<VertexBuffer> m_vbo;
+        // Scoped<IndexBuffer> m_ibo;
 
         Ref<Texture2D> m_Texture;
         Ref<EditorCamera> m_Camera;
@@ -53,7 +56,7 @@ namespace Almond::Editor
 
         // Relative to the top left of OS Window
         glm::vec2 m_VpMinBounds;
-        // glm::vec2 m_VpMaxBounds;
 
+        Entity m_TestEntity { "Test Model" };
     };
 } // namespace Almond::Editor

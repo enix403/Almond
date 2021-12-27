@@ -46,23 +46,10 @@ namespace Almond
 namespace Almond
 {
     
-    Texture2D::Texture2D(u32 width, u32 height, TexFormat format, TextureFilterDescription filterDesc, TextureWrapDescription wrapDesc)
-        : m_Width(width)
-        , m_Height(height)
-    {
-
-        m_SourceDataType = GL_UNSIGNED_BYTE;
-        switch (format) {
-            case TexFormat::RGB_8:  m_SourceDataFormat = GL_RGB; break;
-            case TexFormat::RGBA_8: m_SourceDataFormat = GL_RGBA; break;
-        }
-
-        glCreateTextures(GL_TEXTURE_2D, 1, &m_TexID);
-        glTextureStorage2D(m_TexID, 1, GL_RGBA8, m_Width, m_Height);
-        ConfigureParams(m_TexID, filterDesc, wrapDesc);   
-    }
-
-    void Texture2D::ConfigureParams(uint textureId, TextureFilterDescription filterDesc, TextureWrapDescription wrapDesc)
+    /* static */ 
+    void Texture2D::ConfigureParams(uint textureId,
+                                    TextureFilterDescription filterDesc, 
+                                    TextureWrapDescription wrapDesc)
     {
         auto minFilter = (filterDesc >> 0) & 0x03;
         auto magFilter = (filterDesc >> 2) & 0x03;
@@ -92,6 +79,30 @@ namespace Almond
                 TexUtils::OpenGLTextureWrapEnum(static_cast<TextureWrapMode>(wrapT)));
     }
 
+    void Texture2D::SetFilteringMode(TextureFilterDescription filterDesc)
+    {
+        ConfigureParams(m_TexID, filterDesc, 0);
+    }
+
+    void Texture2D::SetWrappingMode(TextureWrapDescription wrapDesc)
+    {
+        ConfigureParams(m_TexID, 0, wrapDesc);
+    }
+
+    Texture2D::Texture2D(u32 width, u32 height, TexFormat format)
+        : m_Width(width)
+        , m_Height(height)
+    {
+
+        m_SourceDataType = GL_UNSIGNED_BYTE;
+        switch (format) {
+            case TexFormat::RGB_8:  m_SourceDataFormat = GL_RGB; break;
+            case TexFormat::RGBA_8: m_SourceDataFormat = GL_RGBA; break;
+        }
+
+        glCreateTextures(GL_TEXTURE_2D, 1, &m_TexID);
+        glTextureStorage2D(m_TexID, 1, GL_RGBA8, m_Width, m_Height);
+    }
 
     Texture2D::~Texture2D()
     {
@@ -145,11 +156,9 @@ namespace Almond
             AD_CORE_LOG_ERROR("Invalid texture format with channels {0}", channels);
         }
 
-        Ref<Texture2D> texture = CreateRef<Texture2D>(
-            width, height, format, 
-            TEX_FILTER_MIN(TEX_FILTER_MODE_NEAREST) | TEX_FILTER_MAG(TEX_FILTER_MODE_LINEAR), 
-            TEX_WRAP_S(TEX_WRAP_MODE_REPEAT) | TEX_WRAP_T(TEX_WRAP_MODE_REPEAT)
-        );
+        Ref<Texture2D> texture = CreateRef<Texture2D>(width, height, format);
+        texture->SetFilteringMode(TEX_FILTER_MIN(TEX_FILTER_MODE_NEAREST) | TEX_FILTER_MAG(TEX_FILTER_MODE_LINEAR));
+        texture->SetWrappingMode(TEX_WRAP_S(TEX_WRAP_MODE_REPEAT) | TEX_WRAP_T(TEX_WRAP_MODE_REPEAT));
         texture->SetData(data, 0);
 
         stbi_image_free(data);

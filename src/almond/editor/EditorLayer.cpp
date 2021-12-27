@@ -37,39 +37,41 @@ namespace Almond::Editor
         m_CamController = CreateRef<EditorCameraController>(m_Camera);
 
 
-        m_vao = CreateScoped<VertexArray>();
-        m_vbo = CreateScoped<VertexBuffer>();
-        m_ibo = CreateScoped<IndexBuffer>();
+        // m_vao = CreateScoped<VertexArray>();
+        // m_vbo = CreateScoped<VertexBuffer>();
+        // m_ibo = CreateScoped<IndexBuffer>();
 
-        float vertices[] = 
-        {
-            -0.5f, -0.5f, 0.f, 0.f, 0.f, +1.f, 0.0f, 0.0f, // bottom left
-            0.5f,  -0.5f, 0.f, 0.f, 0.f, +1.f, 1.0f, 0.0f, // bottom right
-            0.5f,  0.5f,  0.f, 0.f, 0.f, +1.f, 1.0f, 1.0f, // top right
-            -0.5f, 0.5f,  0.f, 0.f, 0.f, +1.f, 0.0f, 1.0f, // top left
-        };
+        // float vertices[] = 
+        // {
+        //     -0.5f, -0.5f, 0.f, 0.f, 0.f, +1.f, 0.0f, 0.0f, // bottom left
+        //     0.5f,  -0.5f, 0.f, 0.f, 0.f, +1.f, 1.0f, 0.0f, // bottom right
+        //     0.5f,  0.5f,  0.f, 0.f, 0.f, +1.f, 1.0f, 1.0f, // top right
+        //     -0.5f, 0.5f,  0.f, 0.f, 0.f, +1.f, 0.0f, 1.0f, // top left
+        // };
 
-        unsigned int indices[] = {
-            0, 1, 2, 
-            0, 2, 3
-        };
+        // unsigned int indices[] = {
+        //     0, 1, 2, 
+        //     0, 2, 3
+        // };
 
-        m_vbo->SetData(vertices, sizeof(vertices), BUF_USAGE_STATIC_DRAW);
-        m_ibo->SetIndices(indices, sizeof(indices), BUF_USAGE_STATIC_DRAW);
+        // m_vbo->SetData(vertices, sizeof(vertices), BUF_USAGE_STATIC_DRAW);
+        // m_ibo->SetIndices(indices, sizeof(indices), BUF_USAGE_STATIC_DRAW);
 
 
-        VertexLayout layout = {
-            {0, "ia_Pos",       3, VertAttribComponentType::Float, false},
-            {1, "ia_Normal",    3, VertAttribComponentType::Float, false},
-            {2, "ia_TexCoords", 2, VertAttribComponentType::Float, false},
-        };
+        // VertexLayout layout = {
+        //     {0, "ia_Pos",       3, VertAttribComponentType::Float, false},
+        //     {1, "ia_Normal",    3, VertAttribComponentType::Float, false},
+        //     {2, "ia_TexCoords", 2, VertAttribComponentType::Float, false},
+        // };
 
-        m_vao->AddVertexBuffer(*m_vbo, layout);
-        m_vao->AddIndexBuffer(*m_ibo);
-        m_vao->Unbind();
+        // m_vao->AddVertexBuffer(*m_vbo, layout);
+        // m_vao->AddIndexBuffer(*m_ibo);
+        // m_vao->Unbind();
 
         const auto& winRef = Application::Get()->GetMainWindow();
         float winAspectRatio = (float)winRef.GetWidth() / winRef.GetHeight();
+
+        glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
 
         // glClearColor(0.090196f, 0.090196f, 0.0901961f, 1.f);
         // glClearColor(COMMA_RGB_INT(55, 55, 55), 1.0f);
@@ -104,13 +106,36 @@ namespace Almond::Editor
         m_Texture = Texture2D::CreateFromFile("assets/textures/cosas.png");
         m_Texture->Bind(0);
 
-        m_Shader = m_ShaderLibrary->LoadFromFile("DiffuseModel", "assets/shaders/DiffuseModel.glsl");
+        m_Shader = m_ShaderLibrary->LoadFromFile("DiffuseModel", "assets/shaders/EditorDiffuseModel.glsl");
 
         m_Shader->Bind();
         m_Shader->SetUniformFloat3("u_Color", IRGB_TO_FRGB(174, 177, 189));
-        m_Shader->SetUniformInt("u_ShouldSampleTexture", 1);
+        m_Shader->SetUniformInt("u_ShouldSampleTexture", 0);
         m_Shader->SetUniformInt("u_Texture", 0); // the slot the texture is bound to
+
+        // Test Quad
+        m_TestEntity.CreateBuffers(
+        {
+            ModelVertex { {-0.5f, -0.5f, 0.f}, {0.f, 0.f, 1.f}, {0.0f, 0.0f}, 74}, // bottom left
+            ModelVertex { { 0.5f, -0.5f, 0.f}, {0.f, 0.f, 1.f}, {1.0f, 0.0f}, 74}, // bottom right
+            ModelVertex { { 0.5f,  0.5f, 0.f}, {0.f, 0.f, 1.f}, {1.0f, 1.0f}, 74}, // top right
+            ModelVertex { { -0.5f, 0.5f, 0.f}, {0.f, 0.f, 1.f}, {0.0f, 1.0f}, 74}, // top left
+        }, {
+            0, 1, 2, 
+            0, 2, 3
+        });
     }
+
+    void EditorLayer::DrawEntity(const Entity& entity)
+    {
+        m_Shader->Bind();
+        const auto& modelMatrix = entity.GetTransform().GetMatrix();
+        m_Shader->SetUniformMat4("u_PVM", m_Camera->GetProjectionView() * modelMatrix);
+        m_Shader->SetUniformMat4("u_Model", modelMatrix);
+
+        entity.GetVA().Bind();
+        glDrawElements(GL_TRIANGLES, entity.GetIndexCount(), GL_UNSIGNED_INT, 0);
+    } 
 
     void EditorLayer::OnDetach() { }
 
@@ -125,11 +150,12 @@ namespace Almond::Editor
             auto vpMouseY = m_ViewportSize.y - (mousePosAbsolute.y - m_VpMinBounds.y);
 
             if (vpMouseX >= 0 && vpMouseX <= m_ViewportSize.x && vpMouseY >= 0 && vpMouseY <= m_ViewportSize.y)
-            {
-                m_FrameBuffer->Bind();
-                int objectId = m_FrameBuffer->ReadPixelI(1, vpMouseX, vpMouseY);
-                m_FrameBuffer->Unbind();
-                AD_CORE_LOG_TRACE("Mouse Object ID = {0}", objectId);
+            {   
+                // Set the selected object
+                // m_FrameBuffer->Bind();
+                // int objectId = m_FrameBuffer->ReadPixelI(1, vpMouseX, vpMouseY);
+                // m_FrameBuffer->Unbind();
+                // AD_CORE_LOG_TRACE("Mouse Object ID = {0}", objectId);
             }
         });
 
@@ -142,17 +168,9 @@ namespace Almond::Editor
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         m_FrameBuffer->ClearColorAttachment(1, -1);
 
-        m_vao->Bind();
-        m_Shader->Bind();
-
-
-        m_Shader->SetUniformMat4("u_Transform", m_Camera->GetProjectionView());
-        m_Shader->SetUniformMat4("u_Model", glm::mat4 { 1.0f });
-
         // light follows the camera
         m_Shader->SetUniformFloat3("u_DirectionToLight", glm::normalize(-m_Camera->GetFowardDirection()));
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        DrawEntity(m_TestEntity);
 
         m_FrameBuffer->Unbind();
     }
@@ -193,7 +211,7 @@ namespace Almond::Editor
 
         unsigned int textureId = m_FrameBuffer->GetColorAttachmentRendererId(0);
         ImGui::Image(
-            (void*)textureId, 
+            (void*)textureId,
             ImVec2 { m_ViewportSize.x, m_ViewportSize.y }, // size 
             { 0.f, 1.f }, // upper left UV
             { 1.f, 0.f} // bottom right UV

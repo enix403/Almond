@@ -30,7 +30,7 @@ namespace Almond {
         :   TextureFormat(textureFormat)
         {}
 
-        FBTextureSpecification(FBTextureFormat textureFormat, uint8_t filterDesc, uint16_t wrapDesc)
+        FBTextureSpecification(FBTextureFormat textureFormat, TextureFilterDescription filterDesc, TextureWrapDescription wrapDesc)
         :   TextureFormat(textureFormat),
             FilterDescription(filterDesc),
             WrapDescription(wrapDesc)

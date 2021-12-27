@@ -68,18 +68,29 @@ namespace Almond
         for (const VLayoutElement& elem : layout)
         {
             glEnableVertexAttribArray(elem.LayoutIndex);
-            glVertexAttribPointer(elem.LayoutIndex,
-                                  elem.VecComponentCount,
-                                  ComponentTypeToOpenGlType(elem.ComponentType),
-                                  elem.Normalize ? GL_TRUE : GL_FALSE,
-                                  stride,
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wint-to-void-pointer-cast"
-                                  (void*)currentOffset
-#pragma clang diagnostic pop
+            switch (elem.ComponentType)
+            {
+            case VertAttribComponentType::Float:
+                glVertexAttribPointer(
+                    elem.LayoutIndex,
+                    elem.VecComponentCount,
+                    ComponentTypeToOpenGlType(elem.ComponentType),
+                    elem.Normalize ? GL_TRUE : GL_FALSE,
+                    stride,
+                    (void*)currentOffset
+                );
+                break;
+            case VertAttribComponentType::Int:
+                glVertexAttribIPointer(
+                    elem.LayoutIndex,
+                    elem.VecComponentCount,
+                    ComponentTypeToOpenGlType(elem.ComponentType),
+                    stride,
+                    (void*)currentOffset
+                );
+            }
 
-            );
             currentOffset += elem.VecComponentCount * GetComponentTypeByteCount(elem.ComponentType);
         }
     }
