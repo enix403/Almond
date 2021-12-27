@@ -8,6 +8,22 @@ namespace {
     namespace utils
     {
         using namespace Almond;
+
+        // GLenum OpenGlInternalColorFormat(FBTextureFormat format)
+        // {
+        //     switch (format) {
+        //         case Almond::FBTextureFormat::RGBA_8:
+        //             return GL_RGBA8;
+        //         case Almond::FBTextureFormat::RED_I32:
+        //             return GL_RED_INTEGER;
+
+        //         default: break;
+        //     }
+
+        //     // TODO: ASSERT(false, "Unknown color texture type")
+        //     return 0;
+        // }
+
         bool IsDepthAttachmentFormat(FBTextureFormat format)
         {
             switch (format) {
@@ -17,14 +33,8 @@ namespace {
                     return false;
             }
         }
-
-        GLint OpenGLFilter(uint8_t value)
-        {
-            // Very, VERY temporary
-            return value == 1 ? GL_LINEAR : GL_REPEAT;
-        }
         
-        inline constexpr GLenum TextureTarget(bool multisampled)
+        inline constexpr GLenum OpenGlTextureTarget(bool multisampled)
         {
             return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
         }
@@ -37,7 +47,7 @@ namespace {
             else 
                 glTextureStorage2D(texId, 1, internalFormat, width, height);
 
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(multisampled), texId, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, OpenGlTextureTarget(multisampled), texId, 0);
         }
 
         inline void AttachSingularTexture(uint32_t texId, GLenum internalFormat, GLenum attachmentType, uint32_t width, uint32_t height, int samples)
@@ -48,7 +58,7 @@ namespace {
             else 
                 glTextureStorage2D(texId, 1, internalFormat, width, height);
             
-            glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, TextureTarget(multisampled), texId, 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, OpenGlTextureTarget(multisampled), texId, 0);
         }
     }
 }
@@ -99,7 +109,7 @@ namespace Almond {
 
         if (m_ColorAttachmentSpecs.size())
         {
-            glCreateTextures(utils::TextureTarget(multisampled), m_ColorAttachmentIds.size(), m_ColorAttachmentIds.data());
+            glCreateTextures(utils::OpenGlTextureTarget(multisampled), m_ColorAttachmentIds.size(), m_ColorAttachmentIds.data());
             for (int i = 0; i < m_ColorAttachmentSpecs.size(); i++)
             {
                 const auto& attachment = m_ColorAttachmentSpecs[i];
@@ -114,6 +124,9 @@ namespace Almond {
                     default:
                         break;
                 }
+                
+                // utils::AttachColorTexture(i, texId, utils::OpenGlInternalColorFormat(attachment.TextureFormat), 
+                            // m_Spec.Width, m_Spec.Height, m_Spec.SampleCount);
 
                 Texture2D::ConfigureParams(texId, attachment.FilterDescription, attachment.WrapDescription);
             }
@@ -121,7 +134,7 @@ namespace Almond {
 
         if (m_DepthAttachmentSpec.TextureFormat != FBTextureFormat::None)
         {
-            glCreateTextures(utils::TextureTarget(multisampled), 1, &m_DepthAttachmentId);
+            glCreateTextures(utils::OpenGlTextureTarget(multisampled), 1, &m_DepthAttachmentId);
 
             switch (m_DepthAttachmentSpec.TextureFormat) {
                 case FBTextureFormat::DEPTH_24_STENCIL_8:
@@ -176,7 +189,7 @@ namespace Almond {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    int Framebuffer::ReadPixelInt(int attachmentIndex, int x, int y)
+    int Framebuffer::ReadPixelI(int attachmentIndex, int x, int y)
     {
         // TODO: Check if attachment is valid
         glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
@@ -185,4 +198,9 @@ namespace Almond {
         return pixelData;
     }
 
+    void Framebuffer::ClearColorAttachment(int index, int value)
+    {
+        // TODO: Check if attachment is valid
+        glClearTexImage(m_ColorAttachmentIds[index], 0, GL_RED_INTEGER, GL_INT, &value);
+    }
 }

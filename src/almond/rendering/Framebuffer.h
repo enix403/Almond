@@ -7,6 +7,8 @@
 
 #include "almond/rendering//Texture.h"
 
+// #include <glm/vec4.hpp>
+
 namespace Almond {
     
     enum class FBTextureFormat
@@ -72,7 +74,9 @@ namespace Almond {
         void Invalidate();
         void Resize(uint32_t width, uint32_t height);
         
-        int ReadPixelInt(int attachmentIndex, int x, int y);
+        int ReadPixelI(int attachmentIndex, int x, int y);
+
+        void ClearColorAttachment(int index, int value);
 
     private:
         uint32_t m_FBId = 0;

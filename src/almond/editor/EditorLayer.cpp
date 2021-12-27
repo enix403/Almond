@@ -71,8 +71,9 @@ namespace Almond::Editor
         const auto& winRef = Application::Get()->GetMainWindow();
         float winAspectRatio = (float)winRef.GetWidth() / winRef.GetHeight();
 
-        glClearColor(0.090196f, 0.090196f, 0.0901961f, 1.f);
+        // glClearColor(0.090196f, 0.090196f, 0.0901961f, 1.f);
         // glClearColor(COMMA_RGB_INT(55, 55, 55), 1.0f);
+        glClearColor(0.2117647f, 0.2117647f, 0.2117647f, 1.f);
 
         glEnable(GL_MULTISAMPLE);
 
@@ -126,7 +127,7 @@ namespace Almond::Editor
             if (vpMouseX >= 0 && vpMouseX <= m_ViewportSize.x && vpMouseY >= 0 && vpMouseY <= m_ViewportSize.y)
             {
                 m_FrameBuffer->Bind();
-                int objectId = m_FrameBuffer->ReadPixelInt(1, vpMouseX, vpMouseY);
+                int objectId = m_FrameBuffer->ReadPixelI(1, vpMouseX, vpMouseY);
                 m_FrameBuffer->Unbind();
                 AD_CORE_LOG_TRACE("Mouse Object ID = {0}", objectId);
             }
@@ -139,6 +140,7 @@ namespace Almond::Editor
     {
         m_FrameBuffer->Bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        m_FrameBuffer->ClearColorAttachment(1, -1);
 
         m_vao->Bind();
         m_Shader->Bind();
@@ -198,8 +200,15 @@ namespace Almond::Editor
         );
 
         // Position (top left) of this ImGui window relative to OS window. Includes the tab bar
-        auto windowOffsetApp = ImGui::GetWindowPos(); 
-
+        auto windowOffsetApp = ImGui::GetWindowPos();
+    
+        // ===============================================================================================
+        // ||                                                                                           ||
+        // ||  Abosulute offset of      =  Absolute offset of window + Offset of viewport relative to   ||
+        // ||  viewport inside window                                      the window                   ||
+        // ||                                                                                           ||
+        // ===============================================================================================
+        //
         m_VpMinBounds = { windowOffsetApp.x + viewportOffset.x, windowOffsetApp.y + viewportOffset.y };
 
         ImGui::End();
