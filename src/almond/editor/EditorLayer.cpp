@@ -8,8 +8,8 @@
 #include "almond/input/Input.h"
 #include "almond/input/codes.h"
 
+#include "almond/core/base.h"
 #include "almond/core/Application.h"
-#include "almond/core/Logging.h"
 #include "almond/ui/ImGuiLayer.h"
 #include "almond/events/window_events.h"
 #include "almond/events/mouse_events.h"
@@ -86,7 +86,7 @@ namespace Almond::Editor
         glEnable(GL_DEPTH_TEST); // temp
     }
 
-    void EditorLayer::OnAttach() 
+    void EditorLayer::OnAttach()
     {
         {
             FramebufferSpecification fbspec {};

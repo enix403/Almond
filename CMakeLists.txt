@@ -25,7 +25,13 @@ set(
     stb_image
 )
 
-target_compile_definitions(almond PUBLIC GLFW_INCLUDE_NONE)
+target_compile_definitions(
+    almond PUBLIC
+    GLFW_INCLUDE_NONE
+
+    _AD_DEBUG
+    _AD_ENABLE_ASSERTS
+)
 
 target_include_directories(almond PRIVATE ${APP_SOURCES_DIRECTORY})
 target_link_libraries(almond ${APP_LIBS})
