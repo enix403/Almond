@@ -46,15 +46,15 @@ namespace Almond
 
     /* ============================= IndexBuffer ============================= */
     
-    IndexBuffer::IndexBuffer(size_t maxSize)
-    : IndexBuffer(maxSize, GL_STATIC_DRAW)
+    IndexBuffer::IndexBuffer(int maxIndexCount)
+    : IndexBuffer(maxIndexCount, GL_STATIC_DRAW)
     {}
 
-    IndexBuffer::IndexBuffer(size_t maxSize, int usage)
+    IndexBuffer::IndexBuffer(int maxIndexCount, int usage)
     {
         glGenBuffers(1, &m_BufId);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_BufId);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxSize, NULL, usage);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxIndexCount * sizeof(uint32_t), NULL, usage);
     }
 
     IndexBuffer::~IndexBuffer()
@@ -72,16 +72,16 @@ namespace Almond
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    void IndexBuffer::SetData(const uint32_t* data, size_t offset, size_t size)
+    void IndexBuffer::SetData(const uint32_t* data, int offset, int updateCount)
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_BufId);
-        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset * sizeof(uint32_t), updateCount * sizeof(uint32_t), data);
     }
 
-    void IndexBuffer::UpdateSize(size_t size, int usage, const uint32_t* newData)
+    void IndexBuffer::UpdateSize(int maxIndexCount, int usage, const uint32_t* newData)
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_BufId);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, newData, usage);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxIndexCount * sizeof(uint32_t), newData, usage);
     }
 
     /* ============================= IndexBuffer ============================= */

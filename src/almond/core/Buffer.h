@@ -77,18 +77,18 @@ namespace Almond
     class IndexBuffer
     {
     public:
-        IndexBuffer(size_t maxSize);
-        IndexBuffer(size_t maxSize, int usage);
+        IndexBuffer(int maxIndexCount);
+        IndexBuffer(int maxIndexCount, int usage);
         ~IndexBuffer();
 
         void Bind() const;
         void Unbind() const;
 
-        void UpdateSize(size_t size, int usage, const uint32_t* newData);
-        inline void UpdateSize(size_t size, int usage) { UpdateSize(size, usage, NULL); }
+        void UpdateSize(int maxIndexCount, int usage, const uint32_t* newData);
+        inline void UpdateSize(int maxIndexCount, int usage) { UpdateSize(maxIndexCount, usage, NULL); }
 
-        void SetData(const uint32_t* data, size_t offset, size_t size);
-        inline void SetData(const uint32_t* data, size_t size) { SetData(data, 0, size); }
+        void SetData(const uint32_t* data, int offset, int updateCount);
+        inline void SetData(const uint32_t* data, int updateCount) { SetData(data, 0, updateCount); }
 
     private:
         uint m_BufId;

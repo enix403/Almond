@@ -1,8 +1,8 @@
 #include "Renderer.h"
 #include <memory>
 
-#include "almond/utils/colors.h"
 #include "almond/core/base.h"
+#include "almond/utils/colors.h"
 #include "almond/rendering/Shader.h"
 #include "almond/rendering/Texture.h"
 #include "almond/core/Buffer.h"
@@ -73,7 +73,7 @@ namespace Almond
     void Renderer::Init()
     {
         s_Data.BatchVBO = CreateScoped<VertexBuffer>(sizeof(ShaderVertexData) * MAX_VERTICES, GL_DYNAMIC_DRAW);
-        s_Data.BatchIBO = CreateScoped<IndexBuffer>(sizeof(uint32_t) * MAX_INDICES, GL_STATIC_DRAW);
+        s_Data.BatchIBO = CreateScoped<IndexBuffer>(MAX_INDICES, GL_STATIC_DRAW);
         s_Data.BatchVAO = CreateScoped<VertexArray>();
 
         s_Data.BatchVAO->AddVertexBuffer(*s_Data.BatchVBO, {
@@ -131,15 +131,17 @@ namespace Almond
             s_Data.BtVertexTop++;
         }
 
-        auto indexDataSize = mesh.Indices.size() * sizeof(uint32_t);
-        memcpy(s_Data.BtIndexTop, mesh.Indices.data(), indexDataSize);
-        s_Data.BtIndexTop += indexDataSize;
+        auto indexCount = mesh.Indices.size();
+        memcpy(s_Data.BtIndexTop, mesh.Indices.data(), indexCount * sizeof(uint32_t));
+        s_Data.BtIndexTop += indexCount;
     }
 
     void Renderer::EndScene()
     {
         s_Data.DefaultEntityShader->Bind();
+
         s_Data.DefaultEntityShader->SetUniformFloat3("u_Color", IRGB_TO_FRGB(174, 177, 189));
+
         s_Storage.DefaultTexture->Bind(0);
         s_Data.DefaultEntityShader->SetUniformInt("u_Texture", 0); // the slot the texture is bound to
 
@@ -152,7 +154,7 @@ namespace Almond
         s_Data.BatchVAO->Bind();
 
         s_Data.BatchVBO->SetData(s_Data.BtVertices, static_cast<int>(s_Data.BtVertexTop - s_Data.BtVertices) * sizeof(s_Data.BtVertices[0]));
-        s_Data.BatchIBO->SetData(s_Data.BtIndices, static_cast<int>(s_Data.BtIndexTop - s_Data.BtIndices) * sizeof(uint32_t));
+        s_Data.BatchIBO->SetData(s_Data.BtIndices, static_cast<int>(s_Data.BtIndexTop - s_Data.BtIndices));
 
         glDrawElements(GL_TRIANGLES, static_cast<int>(s_Data.BtIndexTop - s_Data.BtIndices), GL_UNSIGNED_INT, 0);
     }

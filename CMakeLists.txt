@@ -28,6 +28,7 @@ set(
 target_compile_definitions(
     almond PUBLIC
     GLFW_INCLUDE_NONE
+    SPDLOG_COMPILED_LIB=1
 
     _AD_DEBUG
     _AD_ENABLE_ASSERTS

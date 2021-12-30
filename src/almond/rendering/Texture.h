@@ -23,17 +23,6 @@ namespace Almond
         TEX_WRAP_MODE_CLAMP_EDGE, 
         TEX_WRAP_MODE_CLAMP_BORDER
     };
-    
-    namespace TexUtils
-    {
-        /* TODO: These utility functions are way out of place. 
-        * But they needed here because they are used by multiple files and I don't like duplicating...
-        *
-        * They convert the above TextureFilterMode and TextureWrapMode to the corresponding opengl constants
-        */
-        int OpenGLTextureFilterEnum(TextureFilterMode filterMode);
-        int OpenGLTextureWrapEnum(TextureWrapMode wrapMode);
-    }
 
     class Texture
     {

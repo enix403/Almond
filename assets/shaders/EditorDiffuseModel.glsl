@@ -38,15 +38,11 @@ void main()
 #ShaderSegment:fragment
 #version 420 core
 
-// const vec3 DIRECTION_TO_LIGHT = normalize(vec3(1.0, 1.5, -1.0));
 const float AMBIENT_LIGHT = 0.55;
 
 uniform vec3 u_Color;
 uniform vec3 u_DirectionToLight;
 
-// Whether to sample from texture or use solid color.
-//
-// An int is used here because of shaky support of bool in various OpenGL drivers
 uniform sampler2D u_Texture;
 
 in VS_OUT {
@@ -60,7 +56,7 @@ layout (location = 1) out int entityID;
 
 void main()
 {   
-    float lightIntensity = AMBIENT_LIGHT + max(0, dot(normalize(fs_in.fragNormal), u_DirectionToLight)) * 0.5;
+    float lightIntensity = AMBIENT_LIGHT + abs(dot(normalize(fs_in.fragNormal), u_DirectionToLight)) * 0.5;
     vec3 fragSampleColor = texture(u_Texture, fs_in.texCoords).xyz * u_Color;
         
     fragColor = vec4(fragSampleColor * lightIntensity, 1.0);
