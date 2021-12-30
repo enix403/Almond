@@ -19,6 +19,8 @@ set (
     "src/almond/editor/EditorLayer.cpp"
     "src/almond/editor/EditorCamera.cpp"
     "src/almond/editor/Entity.cpp"
+    "src/almond/editor/Mesh.cpp"
+    "src/almond/utils/math.cpp"
     "src/platform/linux/LinuxWindow.cpp"
     "src/platform/linux/LinuxInput.cpp"
 )

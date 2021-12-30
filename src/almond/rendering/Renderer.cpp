@@ -92,7 +92,7 @@ namespace Almond
         s_Storage.DefaultTexture->SetFilteringMode(TEX_FILTER_MIN(TEX_FILTER_MODE_NEAREST) | TEX_FILTER_MAG(TEX_FILTER_MODE_LINEAR));
         s_Storage.DefaultTexture->SetWrappingMode(TEX_WRAP_S(TEX_WRAP_MODE_REPEAT) | TEX_WRAP_T(TEX_WRAP_MODE_REPEAT));
         
-        const unsigned char texData[] = { 0xff, 0xff, 0x00, 0xff }; // Yellow, because, why not?
+        const unsigned char texData[] = { 0xff, 0xff, 0xff, 0xff };
         s_Storage.DefaultTexture->SetData(texData, sizeof(texData));
     }
 
@@ -108,7 +108,7 @@ namespace Almond
     void Renderer::BeginScene(const Camera &camera)
     {
         s_Data.CameraData.ProjectionView = camera.GetProjectionView();
-        s_Data.CameraData.DirectionToLight = glm::normalize(-camera.GetFowardDirection());
+        s_Data.CameraData.DirectionToLight = -glm::normalize(camera.GetFowardDirection());
 
         s_Data.BtVertexTop = s_Data.BtVertices;
         s_Data.BtIndexTop = s_Data.BtIndices;
@@ -118,18 +118,21 @@ namespace Almond
     {
         s_Data.__temp_ModelMatrix = entity.GetTransform().GetMatrix();
 
-        for (const auto& vertex : entity.m_Vertices)
+        const auto& mesh = entity.GetMesh();    
+
+        for (int i = 0; i < mesh.VertexCount(); i++)
         {
-            s_Data.BtVertexTop->Pos = vertex.Position;   
-            s_Data.BtVertexTop->Normal = vertex.Normal;   
-            s_Data.BtVertexTop->TexCoords = vertex.TextureCoords;
+            s_Data.BtVertexTop->Pos = mesh.Vertices[i];   
+            s_Data.BtVertexTop->Normal = mesh.Normals[i];   
+            s_Data.BtVertexTop->TexCoords = mesh.TextureCoords[i];
+
             s_Data.BtVertexTop->EntityID = entity.m_entityID;
 
-            s_Data.BtVertexTop++;   
+            s_Data.BtVertexTop++;
         }
 
-        auto indexDataSize = entity.m_Indices.size() * sizeof(uint32_t);
-        memcpy(s_Data.BtIndexTop, entity.m_Indices.data(), indexDataSize);
+        auto indexDataSize = mesh.Indices.size() * sizeof(uint32_t);
+        memcpy(s_Data.BtIndexTop, mesh.Indices.data(), indexDataSize);
         s_Data.BtIndexTop += indexDataSize;
     }
 
@@ -137,8 +140,6 @@ namespace Almond
     {
         s_Data.DefaultEntityShader->Bind();
         s_Data.DefaultEntityShader->SetUniformFloat3("u_Color", IRGB_TO_FRGB(174, 177, 189));
-        s_Data.DefaultEntityShader->SetUniformInt("u_ShouldSampleTexture", 1);
-
         s_Storage.DefaultTexture->Bind(0);
         s_Data.DefaultEntityShader->SetUniformInt("u_Texture", 0); // the slot the texture is bound to
 

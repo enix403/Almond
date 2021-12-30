@@ -73,16 +73,35 @@ namespace Almond::Editor
         Renderer::Init();
 
         // Test Quad
-        m_TestEntity.SetGeometry(
-        {
-            ModelVertex { {-0.5f, -0.5f, 0.f}, {0.f, 0.f, 1.f}, {0.0f, 0.0f} }, // bottom left
-            ModelVertex { { 0.5f, -0.5f, 0.f}, {0.f, 0.f, 1.f}, {1.0f, 0.0f} }, // bottom right
-            ModelVertex { { 0.5f,  0.5f, 0.f}, {0.f, 0.f, 1.f}, {1.0f, 1.0f} }, // top right
-            ModelVertex { { -0.5f, 0.5f, 0.f}, {0.f, 0.f, 1.f}, {0.0f, 1.0f} }, // top left
-        }, {
-            0, 1, 2, 
-            0, 2, 3
-        });
+        auto& testMesh = m_TestEntity.GetMesh();
+        testMesh.Vertices = {
+            {-0.5f, -0.5f, 0.0f}, // bottom left
+            { 0.5f, -0.5f, 0.0f}, // bottom right
+            { 0.5f,  0.5f, 0.0f}, // top right
+            {-0.5f,  0.5f, 0.0f}, // top left
+        };
+
+        testMesh.Normals = {
+            {0.0f, 0.0f, 1.0f},
+            {0.0f, 0.0f, 1.0f},
+            {0.0f, 0.0f, 1.0f},
+            {0.0f, 0.0f, 1.0f},
+        };
+
+        testMesh.TextureCoords = {
+            {0.0f, 0.0f},
+            {1.0f, 0.0f},
+            {1.0f, 1.0f},
+            {0.0f, 1.0f},
+        };
+
+        testMesh.Indices = { 0, 1, 2, 0, 2, 3 };
+
+        auto& testTransform = m_TestEntity.GetTransform();
+
+        testTransform.Position += glm::vec3 {1.0f, 0.0f, 0.0f};
+        testTransform.Rotation = { 0.0f, 0.0f, 45.0f };
+        m_TestEntity.RecalculateTransformData();
     }
 
     void EditorLayer::OnDetach() 

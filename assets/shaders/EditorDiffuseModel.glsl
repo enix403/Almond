@@ -27,7 +27,7 @@ void main()
     vec3 worldNormal = normalize(mat3(u_Model) * v_Normal);
     vs_out.fragNormal = worldNormal;
     vs_out.texCoords = v_TexCoords;
-    
+
     vs_out.entityID = v_EntityID;
 }
 
@@ -47,7 +47,6 @@ uniform vec3 u_DirectionToLight;
 // Whether to sample from texture or use solid color.
 //
 // An int is used here because of shaky support of bool in various OpenGL drivers
-uniform int u_ShouldSampleTexture;
 uniform sampler2D u_Texture;
 
 in VS_OUT {
@@ -62,12 +61,7 @@ layout (location = 1) out int entityID;
 void main()
 {   
     float lightIntensity = AMBIENT_LIGHT + max(0, dot(normalize(fs_in.fragNormal), u_DirectionToLight)) * 0.5;
-    vec3 fragSampleColor;
-
-    if (u_ShouldSampleTexture == 1) 
-        fragSampleColor = texture(u_Texture, fs_in.texCoords).xyz;
-    else
-        fragSampleColor = u_Color;
+    vec3 fragSampleColor = texture(u_Texture, fs_in.texCoords).xyz * u_Color;
         
     fragColor = vec4(fragSampleColor * lightIntensity, 1.0);
     entityID = fs_in.entityID;
