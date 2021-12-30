@@ -2,9 +2,9 @@
 
 #include <functional>
 
+#include "almond/core/base.h"
 #include "almond/core/Logging.h"
 #include "almond/core/Timestep.h"
-#include "almond/core/base.h"
 #include "almond/editor/EditorLayer.h"
 #include "almond/rendering/RenderAPI.h"
 #include "almond/ui/imgui_setup.h"

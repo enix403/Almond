@@ -46,6 +46,6 @@ namespace Almond::Editor
         // Relative to the top left of OS Window
         glm::vec2 m_VpMinBounds;
 
-        Entity m_TestEntity { "Test Model" };
+        // Entity m_TestEntity { "Test Model" };
     };
 } // namespace Almond::Editor

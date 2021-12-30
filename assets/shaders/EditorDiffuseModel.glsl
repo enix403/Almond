@@ -5,13 +5,14 @@
 #ShaderSegment:vertex
 #version 420 core
 
-layout (location = 0) in vec3 v_Pos;
+layout (location = 0) in vec4 v_Pos;
 layout (location = 1) in vec3 v_Normal;
 layout (location = 2) in vec2 v_TexCoords;
 layout (location = 3) in int v_EntityID;
 
-uniform mat4 u_PVM; // projection * view * model 
-uniform mat4 u_Model;
+uniform mat4 u_PV; // projection * view 
+// uniform mat4 u_Model;
+// uniform mat3 u_ModelInverseTranspose;
 
 out VS_OUT {
     vec3 fragNormal;
@@ -21,10 +22,13 @@ out VS_OUT {
 
 void main()
 {   
-    gl_Position = u_PVM * vec4(v_Pos, 1.0);
+    gl_Position = u_PV * v_Pos;
 
     // FIXME: will not work if u_Model contains non-uniform scaling
-    vec3 worldNormal = normalize(mat3(u_Model) * v_Normal);
+    // vec3 worldNormal = normalize(mat3(u_Model) * v_Normal);
+    // vec3 worldNormal = normalize(u_ModelInverseTranspose * v_Normal);
+    vec3 worldNormal = normalize(v_Normal);
+
     vs_out.fragNormal = worldNormal;
     vs_out.texCoords = v_TexCoords;
 

@@ -17,8 +17,10 @@ namespace Almond
     void Entity::RecalculateTransformData()
     {
         m_Transform.Update();
-        m_InverseTrasponse = Math::CalculateRotation(m_Transform.Rotation.x, m_Transform.Rotation.y, m_Transform.Rotation.z)
-                            * glm::scale(Math::IDENTITY_MATRIX, 1.0f / m_Transform.Scale);
+        m_InverseTrasponse = glm::mat3(
+            Math::CalculateRotation(m_Transform.Rotation.x, m_Transform.Rotation.y, m_Transform.Rotation.z)
+            * glm::scale(Math::IDENTITY_MATRIX, 1.0f / m_Transform.Scale)
+        );
     }
 
 }

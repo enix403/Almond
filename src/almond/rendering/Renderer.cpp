@@ -17,7 +17,7 @@ namespace
 {
     using namespace Almond;
 
-    static constexpr int MAX_TRIANGLES = 32; 
+    static constexpr int MAX_TRIANGLES = 128; 
     static constexpr int MAX_VERTICES = MAX_TRIANGLES * 3; 
     static constexpr int MAX_INDICES = MAX_VERTICES; // Worst case: exactly one index referrring to each vertex 
 
@@ -25,7 +25,7 @@ namespace
 
     struct ShaderVertexData
     {
-        glm::vec3 Pos;
+        glm::vec4 Pos;
         glm::vec3 Normal;
         glm::vec2 TexCoords;
 
@@ -57,9 +57,6 @@ namespace
         Scoped<IndexBuffer> BatchIBO;
 
         Ref<Shader> DefaultEntityShader;
-
-        // TODO: Very dirty quick hack
-        glm::mat4 __temp_ModelMatrix;
     };
 
     static RendererData s_Data;
@@ -77,7 +74,7 @@ namespace Almond
         s_Data.BatchVAO = CreateScoped<VertexArray>();
 
         s_Data.BatchVAO->AddVertexBuffer(*s_Data.BatchVBO, {
-            {0, "Position",     3, VertAttribComponentType::Float, false},
+            {0, "Position",     4, VertAttribComponentType::Float, false},
             {1, "Normal",       3, VertAttribComponentType::Float, false},
             {2, "TexCoords",    2, VertAttribComponentType::Float, false},
             {3, "Entity ID",    1, VertAttribComponentType::Int, false},
@@ -116,14 +113,16 @@ namespace Almond
 
     void Renderer::DrawEntity(const Entity& entity)
     {
-        s_Data.__temp_ModelMatrix = entity.GetTransform().GetMatrix();
+        const auto& mesh = entity.GetMesh();
+        const auto& transform = entity.GetTransform().GetMatrix();    
+        const auto& invTransform = entity.m_InverseTrasponse;
 
-        const auto& mesh = entity.GetMesh();    
+        auto indicesOffset = static_cast<int>(s_Data.BtVertexTop - s_Data.BtVertices);
 
         for (int i = 0; i < mesh.VertexCount(); i++)
         {
-            s_Data.BtVertexTop->Pos = mesh.Vertices[i];   
-            s_Data.BtVertexTop->Normal = mesh.Normals[i];   
+            s_Data.BtVertexTop->Pos = transform * glm::vec4(mesh.Vertices[i], 1.0f);
+            s_Data.BtVertexTop->Normal = invTransform * mesh.Normals[i];
             s_Data.BtVertexTop->TexCoords = mesh.TextureCoords[i];
 
             s_Data.BtVertexTop->EntityID = entity.m_entityID;
@@ -131,9 +130,8 @@ namespace Almond
             s_Data.BtVertexTop++;
         }
 
-        auto indexCount = mesh.Indices.size();
-        memcpy(s_Data.BtIndexTop, mesh.Indices.data(), indexCount * sizeof(uint32_t));
-        s_Data.BtIndexTop += indexCount;
+        for (auto index: mesh.Indices)
+            *(s_Data.BtIndexTop++) = indicesOffset + index;
     }
 
     void Renderer::EndScene()
@@ -145,17 +143,17 @@ namespace Almond
         s_Storage.DefaultTexture->Bind(0);
         s_Data.DefaultEntityShader->SetUniformInt("u_Texture", 0); // the slot the texture is bound to
 
-        const auto& modelMatrix = s_Data.__temp_ModelMatrix;
-        s_Data.DefaultEntityShader->SetUniformMat4("u_PVM", s_Data.CameraData.ProjectionView * modelMatrix);
-        s_Data.DefaultEntityShader->SetUniformMat4("u_Model", modelMatrix);
-
+        s_Data.DefaultEntityShader->SetUniformMat4("u_PV", s_Data.CameraData.ProjectionView);
         s_Data.DefaultEntityShader->SetUniformFloat3("u_DirectionToLight", s_Data.CameraData.DirectionToLight);
 
         s_Data.BatchVAO->Bind();
 
-        s_Data.BatchVBO->SetData(s_Data.BtVertices, static_cast<int>(s_Data.BtVertexTop - s_Data.BtVertices) * sizeof(s_Data.BtVertices[0]));
-        s_Data.BatchIBO->SetData(s_Data.BtIndices, static_cast<int>(s_Data.BtIndexTop - s_Data.BtIndices));
+        auto vertexCount = static_cast<int>(s_Data.BtVertexTop - s_Data.BtVertices);
+        auto indexCount = static_cast<int>(s_Data.BtIndexTop - s_Data.BtIndices);
 
-        glDrawElements(GL_TRIANGLES, static_cast<int>(s_Data.BtIndexTop - s_Data.BtIndices), GL_UNSIGNED_INT, 0);
+        s_Data.BatchVBO->SetData(s_Data.BtVertices, vertexCount * sizeof(ShaderVertexData));
+        s_Data.BatchIBO->SetData(s_Data.BtIndices, indexCount);
+
+        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
     }
 }

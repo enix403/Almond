@@ -22,6 +22,8 @@ namespace Almond
     public:
         Entity(const std::string& name = "Unnamed Entity");
 
+        inline const std::string& GetName() const { return m_Name; }
+
         inline const MeshTransform& GetTransform() const { return m_Transform; }
         inline MeshTransform& GetTransform() { return m_Transform; }
 
@@ -40,7 +42,7 @@ namespace Almond
         MeshTransform m_Transform {};
         Mesh m_Mesh {};
 
-        glm::mat4 m_InverseTrasponse; // = transpose(inverse(m_Transform without translation)). Needed for lighting calculations
+        glm::mat3 m_InverseTrasponse; // = transpose(inverse(m_Transform without translation)). Needed for lighting calculations
 
         static uint32_t s_NextEntityID;
     };
