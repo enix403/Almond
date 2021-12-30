@@ -13,6 +13,7 @@
 #include "almond/ui/ImGuiLayer.h"
 #include "almond/events/window_events.h"
 #include "almond/events/mouse_events.h"
+#include "almond/rendering/Renderer.h"
 
 #include "almond/utils/colors.h"
 
@@ -31,42 +32,9 @@ namespace Almond::Editor
                              ImGuiWindowFlags_NoMove;
         m_MasterAreaFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
-        m_ShaderLibrary = CreateScoped<ShaderLibrary>();
         m_Camera = CreateRef<EditorCamera>(1.0f);
         m_Camera->SetClippingPlanes(0.01f, 100.0f);
         m_CamController = CreateRef<EditorCameraController>(m_Camera);
-
-
-        // m_vao = CreateScoped<VertexArray>();
-        // m_vbo = CreateScoped<VertexBuffer>();
-        // m_ibo = CreateScoped<IndexBuffer>();
-
-        // float vertices[] = 
-        // {
-        //     -0.5f, -0.5f, 0.f, 0.f, 0.f, +1.f, 0.0f, 0.0f, // bottom left
-        //     0.5f,  -0.5f, 0.f, 0.f, 0.f, +1.f, 1.0f, 0.0f, // bottom right
-        //     0.5f,  0.5f,  0.f, 0.f, 0.f, +1.f, 1.0f, 1.0f, // top right
-        //     -0.5f, 0.5f,  0.f, 0.f, 0.f, +1.f, 0.0f, 1.0f, // top left
-        // };
-
-        // unsigned int indices[] = {
-        //     0, 1, 2, 
-        //     0, 2, 3
-        // };
-
-        // m_vbo->SetData(vertices, sizeof(vertices), BUF_USAGE_STATIC_DRAW);
-        // m_ibo->SetIndices(indices, sizeof(indices), BUF_USAGE_STATIC_DRAW);
-
-
-        // VertexLayout layout = {
-        //     {0, "ia_Pos",       3, VertAttribComponentType::Float, false},
-        //     {1, "ia_Normal",    3, VertAttribComponentType::Float, false},
-        //     {2, "ia_TexCoords", 2, VertAttribComponentType::Float, false},
-        // };
-
-        // m_vao->AddVertexBuffer(*m_vbo, layout);
-        // m_vao->AddIndexBuffer(*m_ibo);
-        // m_vao->Unbind();
 
         const auto& winRef = Application::Get()->GetMainWindow();
         float winAspectRatio = (float)winRef.GetWidth() / winRef.GetHeight();
@@ -82,8 +50,7 @@ namespace Almond::Editor
         glCullFace(GL_BACK);
         glFrontFace(GL_CCW);
 
-        // glEnable(GL_CULL_FACE); // temp
-        glEnable(GL_DEPTH_TEST); // temp
+        glEnable(GL_DEPTH_TEST);
     }
 
     void EditorLayer::OnAttach()
@@ -103,41 +70,25 @@ namespace Almond::Editor
             m_FrameBuffer = CreateScoped<Framebuffer>(fbspec);
         }
 
-        m_Texture = Texture2D::CreateFromFile("assets/textures/cosas.png");
-        m_Texture->Bind(0);
-
-        m_Shader = m_ShaderLibrary->LoadFromFile("DiffuseModel", "assets/shaders/EditorDiffuseModel.glsl");
-
-        m_Shader->Bind();
-        m_Shader->SetUniformFloat3("u_Color", IRGB_TO_FRGB(174, 177, 189));
-        m_Shader->SetUniformInt("u_ShouldSampleTexture", 0);
-        m_Shader->SetUniformInt("u_Texture", 0); // the slot the texture is bound to
+        Renderer::Init();
 
         // Test Quad
-        m_TestEntity.CreateBuffers(
+        m_TestEntity.SetGeometry(
         {
-            ModelVertex { {-0.5f, -0.5f, 0.f}, {0.f, 0.f, 1.f}, {0.0f, 0.0f}, 74}, // bottom left
-            ModelVertex { { 0.5f, -0.5f, 0.f}, {0.f, 0.f, 1.f}, {1.0f, 0.0f}, 74}, // bottom right
-            ModelVertex { { 0.5f,  0.5f, 0.f}, {0.f, 0.f, 1.f}, {1.0f, 1.0f}, 74}, // top right
-            ModelVertex { { -0.5f, 0.5f, 0.f}, {0.f, 0.f, 1.f}, {0.0f, 1.0f}, 74}, // top left
+            ModelVertex { {-0.5f, -0.5f, 0.f}, {0.f, 0.f, 1.f}, {0.0f, 0.0f} }, // bottom left
+            ModelVertex { { 0.5f, -0.5f, 0.f}, {0.f, 0.f, 1.f}, {1.0f, 0.0f} }, // bottom right
+            ModelVertex { { 0.5f,  0.5f, 0.f}, {0.f, 0.f, 1.f}, {1.0f, 1.0f} }, // top right
+            ModelVertex { { -0.5f, 0.5f, 0.f}, {0.f, 0.f, 1.f}, {0.0f, 1.0f} }, // top left
         }, {
             0, 1, 2, 
             0, 2, 3
         });
     }
 
-    void EditorLayer::DrawEntity(const Entity& entity)
+    void EditorLayer::OnDetach() 
     {
-        m_Shader->Bind();
-        const auto& modelMatrix = entity.GetTransform().GetMatrix();
-        m_Shader->SetUniformMat4("u_PVM", m_Camera->GetProjectionView() * modelMatrix);
-        m_Shader->SetUniformMat4("u_Model", modelMatrix);
-
-        entity.GetVA().Bind();
-        glDrawElements(GL_TRIANGLES, entity.GetIndexCount(), GL_UNSIGNED_INT, 0);
-    } 
-
-    void EditorLayer::OnDetach() { }
+        Renderer::Deinit();
+    }
 
     bool EditorLayer::OnEvent(const Events::Event& e)
     {
@@ -168,9 +119,9 @@ namespace Almond::Editor
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         m_FrameBuffer->ClearColorAttachment(1, -1);
 
-        // light follows the camera
-        m_Shader->SetUniformFloat3("u_DirectionToLight", glm::normalize(-m_Camera->GetFowardDirection()));
-        DrawEntity(m_TestEntity);
+        Renderer::BeginScene(*m_Camera);
+        Renderer::DrawEntity(m_TestEntity);
+        Renderer::EndScene();
 
         m_FrameBuffer->Unbind();
     }
@@ -235,7 +186,6 @@ namespace Almond::Editor
         /* ======== */
 
         ImGui::End(); // For Dockspace
-
 
         if (newViewportSize.x != m_ViewportSize.x || newViewportSize.y != m_ViewportSize.y)
         {

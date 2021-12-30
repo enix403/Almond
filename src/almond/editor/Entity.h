@@ -10,6 +10,8 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
+typedef uint32_t EntityHandle_t;
+
 namespace Almond
 {
     struct ModelTransform
@@ -35,8 +37,6 @@ namespace Almond
         glm::vec3 Position;
         glm::vec3 Normal;
         glm::vec2 TextureCoords;
-
-        int EntityID = -1;
     };
 
     class Entity
@@ -44,31 +44,25 @@ namespace Almond
     public:
         Entity(const std::string& name = "Unnamed Entity");
 
-        inline const VertexArray& GetVA() const { return m_VA;   }
-
-        inline int GetVertexCount() const { return m_VertexCount;  }
-        inline int GetIndexCount()  const { return m_IndexCount;   }
+        inline int GetVertexCount() const { return m_Vertices.size();  }
+        inline int GetIndexCount()  const { return m_Indices.size();   }
 
         inline const ModelTransform& GetTransform() const { return m_Trasform; }
 
-
-        void CreateBuffers( const std::vector<ModelVertex>& vertices,
+        void SetGeometry(   const std::vector<ModelVertex>& vertices,
                             const std::vector<uint32_t>& indices);
+
+        // friend class Scene;
+        friend class Renderer;
+
     private:
         std::string m_Name;
-        uint32_t m_entityID;
+        EntityHandle_t m_entityID;
 
         ModelTransform m_Trasform;
 
-        VertexArray m_VA;
-
-        VertexBuffer m_VBuf;
-        // std::vector<ModelVertex> m_Vertices;
-        int m_VertexCount = 0;
-
-        IndexBuffer m_IBuf;
-        // std::vector<uint32_t> m_Indices;
-        int m_IndexCount = 0;
+        std::vector<ModelVertex> m_Vertices;
+        std::vector<uint32_t> m_Indices;
 
     private:
         static uint32_t s_NextEntityID;

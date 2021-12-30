@@ -4,7 +4,7 @@
 #include "almond/core/VertexArray.h"
 #include "almond/core/base.h"
 #include "almond/layers/Layer.h"
-#include "almond/rendering/Entity.h"
+#include "almond/editor/Entity.h"
 #include "almond/editor/EditorCamera.h"
 #include "almond/rendering/Shader.h"
 #include "almond/rendering/Texture.h"
@@ -31,21 +31,10 @@ namespace Almond::Editor
         void CreateDockSpace();
         void CreateMenuBar();
 
-        // TODO: Temporary. Will be moved to its own "Scene" system
-        void DrawEntity(const Entity& entity);
-
     private:
         int m_MasterAreaFlags;
         int m_DockNodeFlags;
 
-        Scoped<ShaderLibrary> m_ShaderLibrary;
-        Ref<Shader> m_Shader;
-
-        // Scoped<VertexArray> m_vao;
-        // Scoped<VertexBuffer> m_vbo;
-        // Scoped<IndexBuffer> m_ibo;
-
-        Ref<Texture2D> m_Texture;
         Ref<EditorCamera> m_Camera;
         Ref<EditorCameraController> m_CamController;
 

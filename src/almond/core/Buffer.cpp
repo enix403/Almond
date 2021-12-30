@@ -6,10 +6,15 @@ namespace Almond
 {
 
     /* ============================= VertexBuffer ============================= */
+    VertexBuffer::VertexBuffer(size_t maxSize)
+    : VertexBuffer(maxSize, GL_STATIC_DRAW)
+    {}
 
-    VertexBuffer::VertexBuffer()
+    VertexBuffer::VertexBuffer(size_t maxSize, int usage)
     {
         glGenBuffers(1, &m_BufId);
+        glBindBuffer(GL_ARRAY_BUFFER, m_BufId);
+        glBufferData(GL_ARRAY_BUFFER, maxSize, NULL, usage);
     }
 
     VertexBuffer::~VertexBuffer()
@@ -27,22 +32,29 @@ namespace Almond
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    void VertexBuffer::SetData(const void* data, int size)
-    {
-        SetData(data, size, GL_STATIC_DRAW);
-    }
-
-    void VertexBuffer::SetData(const void* data, int size, int usage)
+    void VertexBuffer::SetData(const void* data, size_t offset, size_t size)
     {
         glBindBuffer(GL_ARRAY_BUFFER, m_BufId);
-        glBufferData(GL_ARRAY_BUFFER, size, data, usage);
+        glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+    }
+
+    void VertexBuffer::UpdateSize(size_t size, int usage, const void* newData)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, m_BufId);
+        glBufferData(GL_ARRAY_BUFFER, size, newData, usage);
     }
 
     /* ============================= IndexBuffer ============================= */
+    
+    IndexBuffer::IndexBuffer(size_t maxSize)
+    : IndexBuffer(maxSize, GL_STATIC_DRAW)
+    {}
 
-    IndexBuffer::IndexBuffer()
+    IndexBuffer::IndexBuffer(size_t maxSize, int usage)
     {
         glGenBuffers(1, &m_BufId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_BufId);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxSize, NULL, usage);
     }
 
     IndexBuffer::~IndexBuffer()
@@ -60,15 +72,18 @@ namespace Almond
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    void IndexBuffer::SetIndices(const uint* data, int size)
-    {
-        SetIndices(data, size, GL_STATIC_DRAW);
-    }
-
-    void IndexBuffer::SetIndices(const uint* data, int size, int usage)
+    void IndexBuffer::SetData(const uint32_t* data, size_t offset, size_t size)
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_BufId);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, usage);
+        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
     }
+
+    void IndexBuffer::UpdateSize(size_t size, int usage, const uint32_t* newData)
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_BufId);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, newData, usage);
+    }
+
+    /* ============================= IndexBuffer ============================= */
 
 } // namespace Almond

@@ -56,14 +56,19 @@ namespace Almond
     class VertexBuffer
     {
     public:
-        VertexBuffer();
+        VertexBuffer(size_t maxSize);
+        VertexBuffer(size_t maxSize, int usage);
+
         ~VertexBuffer();
 
         void Bind() const;
         void Unbind() const;
 
-        void SetData(const void* data, int size);
-        void SetData(const void* data, int size, int usage);
+        void UpdateSize(size_t size, int usage, const void* newData);
+        inline void UpdateSize(size_t size, int usage) { UpdateSize(size, usage, NULL); }
+
+        void SetData(const void* data, size_t offset, size_t size);
+        inline void SetData(const void* data, size_t size) { SetData(data, 0, size); }
 
     private:
         uint m_BufId;
@@ -72,14 +77,18 @@ namespace Almond
     class IndexBuffer
     {
     public:
-        IndexBuffer();
+        IndexBuffer(size_t maxSize);
+        IndexBuffer(size_t maxSize, int usage);
         ~IndexBuffer();
 
         void Bind() const;
         void Unbind() const;
 
-        void SetIndices(const uint* indices, int size);
-        void SetIndices(const uint* indices, int size, int usage);
+        void UpdateSize(size_t size, int usage, const uint32_t* newData);
+        inline void UpdateSize(size_t size, int usage) { UpdateSize(size, usage, NULL); }
+
+        void SetData(const uint32_t* data, size_t offset, size_t size);
+        inline void SetData(const uint32_t* data, size_t size) { SetData(data, 0, size); }
 
     private:
         uint m_BufId;

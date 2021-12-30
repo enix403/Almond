@@ -5,24 +5,25 @@
 #include "almond/events/Event.h"
 #include "almond/utils/holders.h"
 #include "almond/utils/typedefs.h"
+#include "almond/rendering/Camera.h"
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
 namespace Almond
 {
     // An Arc-Ball Camera
-    class EditorCamera
+    class EditorCamera: public Camera
     {
 
     public:
         explicit EditorCamera(float aspectRatio);
-        ~EditorCamera() = default;
+        ~EditorCamera() override = default;
 
         EditorCamera(const EditorCamera& other) = default;
         EditorCamera& operator=(const EditorCamera& other) = default;
 
-        inline const glm::mat4& GetProjectionView() const { return m_ProjectionView; }
-        inline const glm::vec3& GetPosition() const { return m_Position; }
+        virtual const glm::mat4& GetProjectionView() const override { return m_ProjectionView; }
+        virtual inline const glm::vec3& GetPosition() const override { return m_Position; }
 
         inline float GetNearPlane() const { return m_PlaneNear; }
         inline float GetFarPlane() const { return m_PlaneFar; }
@@ -50,7 +51,7 @@ namespace Almond
 
         inline void SetRadius(float radius) { m_BallRadius = radius; RecalculateProjectionView(); }
 
-        glm::vec3 GetFowardDirection()  const;
+        glm::vec3 GetFowardDirection()  const override; // TODO: fix base class inconsistencies
         glm::vec3 GetUpDirection()      const;
         glm::vec3 GetRightDirection()   const;
 
