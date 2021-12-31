@@ -7,6 +7,7 @@
 #include "almond/core/Timestep.h"
 #include "almond/editor/EditorLayer.h"
 #include "almond/rendering/RenderAPI.h"
+#include "almond/rendering/RenderCapabilities.h"
 #include "almond/ui/imgui_setup.h"
 #include "almond/ui/ImGuiLayer.h"
 #include "platform/linux/LinuxWindow.h"
@@ -51,6 +52,9 @@ namespace Almond
 
         Almond::InitializeRenderApi_OpenGl();
         Almond::ImGuiManager::Initialize(*m_MainWindow);
+
+        RenderCapabilities::QueryCaps();
+        RenderCapabilities::Display();
 
         StartMainLoop();
     }

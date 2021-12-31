@@ -37,6 +37,7 @@ namespace
     struct RendererStorage
     {
         Scoped<Texture2D> DefaultTexture;
+        Ref<Shader> DefaultEntityShader;
     };
 
     struct RendererData
@@ -55,8 +56,6 @@ namespace
         Scoped<VertexArray> BatchVAO;
         Scoped<VertexBuffer> BatchVBO;
         Scoped<IndexBuffer> BatchIBO;
-
-        Ref<Shader> DefaultEntityShader;
     };
 
     static RendererData s_Data;
@@ -82,14 +81,14 @@ namespace Almond
 
         s_Data.BatchVAO->AddIndexBuffer(*s_Data.BatchIBO);
 
-        s_Data.DefaultEntityShader = s_ShaderLib.LoadFromFile("EditorDiffuseModel", "assets/shaders/EditorDiffuseModel.glsl");
+        s_Storage.DefaultEntityShader = s_ShaderLib.LoadFromFile("EditorDiffuseModel", "assets/shaders/EditorDiffuseModel.glsl");
 
         s_Storage.DefaultTexture = CreateScoped<Texture2D>(1, 1, TexFormat::RGBA_8);
 
         s_Storage.DefaultTexture->SetFilteringMode(TEX_FILTER_MIN(TEX_FILTER_MODE_NEAREST) | TEX_FILTER_MAG(TEX_FILTER_MODE_LINEAR));
         s_Storage.DefaultTexture->SetWrappingMode(TEX_WRAP_S(TEX_WRAP_MODE_REPEAT) | TEX_WRAP_T(TEX_WRAP_MODE_REPEAT));
         
-        const unsigned char texData[] = { 0xff, 0xff, 0xff, 0xff };
+        static const uint8_t texData[] = { 0xff, 0xff, 0xff, 0xff };
         s_Storage.DefaultTexture->SetData(texData, sizeof(texData));
     }
 
@@ -136,15 +135,15 @@ namespace Almond
 
     void Renderer::EndScene()
     {
-        s_Data.DefaultEntityShader->Bind();
+        s_Storage.DefaultEntityShader->Bind();
 
-        s_Data.DefaultEntityShader->SetUniformFloat3("u_Color", IRGB_TO_FRGB(174, 177, 189));
+        s_Storage.DefaultEntityShader->SetUniformFloat3("u_Color", IRGB_TO_FRGB(174, 177, 189));
 
         s_Storage.DefaultTexture->Bind(0);
-        s_Data.DefaultEntityShader->SetUniformInt("u_Texture", 0); // the slot the texture is bound to
+        s_Storage.DefaultEntityShader->SetUniformInt("u_Texture", 0); // the slot the texture is bound to
 
-        s_Data.DefaultEntityShader->SetUniformMat4("u_PV", s_Data.CameraData.ProjectionView);
-        s_Data.DefaultEntityShader->SetUniformFloat3("u_DirectionToLight", s_Data.CameraData.DirectionToLight);
+        s_Storage.DefaultEntityShader->SetUniformMat4("u_PV", s_Data.CameraData.ProjectionView);
+        s_Storage.DefaultEntityShader->SetUniformFloat3("u_DirectionToLight", s_Data.CameraData.DirectionToLight);
 
         s_Data.BatchVAO->Bind();
 

@@ -16,6 +16,7 @@ set (
     "src/almond/rendering/Texture.cpp"
     "src/almond/rendering/Renderer.cpp"
     "src/almond/rendering/OrthographicCamera2D.cpp"
+    "src/almond/rendering/RenderCapabilities.cpp"
     "src/almond/editor/EditorLayer.cpp"
     "src/almond/editor/EditorCamera.cpp"
     "src/almond/editor/Entity.cpp"
