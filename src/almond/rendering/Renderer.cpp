@@ -69,7 +69,7 @@ namespace Almond
     void Renderer::Init()
     {
         s_Data.BatchVBO = CreateScoped<VertexBuffer>(sizeof(ShaderVertexData) * MAX_VERTICES, GL_DYNAMIC_DRAW);
-        s_Data.BatchIBO = CreateScoped<IndexBuffer>(MAX_INDICES, GL_STATIC_DRAW);
+        s_Data.BatchIBO = CreateScoped<IndexBuffer>(MAX_INDICES, GL_DYNAMIC_DRAW);
         s_Data.BatchVAO = CreateScoped<VertexArray>();
 
         s_Data.BatchVAO->AddVertexBuffer(*s_Data.BatchVBO, {
