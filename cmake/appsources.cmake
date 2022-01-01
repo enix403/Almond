@@ -15,6 +15,7 @@ set (
     "src/almond/rendering/Framebuffer.cpp"
     "src/almond/rendering/Texture.cpp"
     "src/almond/rendering/Renderer.cpp"
+    "src/almond/rendering/RenderCommand.cpp"
     "src/almond/rendering/OrthographicCamera2D.cpp"
     "src/almond/rendering/RenderCapabilities.cpp"
     "src/almond/editor/EditorLayer.cpp"

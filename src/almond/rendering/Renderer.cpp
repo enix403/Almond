@@ -5,6 +5,7 @@
 #include "almond/utils/colors.h"
 #include "almond/rendering/Shader.h"
 #include "almond/rendering/Texture.h"
+#include "almond/rendering/RenderCommand.h"
 #include "almond/core/Buffer.h"
 #include "almond/core/VertexArray.h"
 
@@ -38,6 +39,8 @@ namespace
     {
         Scoped<Texture2D> DefaultTexture;
         Ref<Shader> DefaultEntityShader;
+
+        RenderCommandQueue MainCmdQueue { 200 };
     };
 
     struct RendererData
@@ -108,6 +111,8 @@ namespace Almond
 
         s_Data.BtVertexTop = s_Data.BtVertices;
         s_Data.BtIndexTop = s_Data.BtIndices;
+
+        s_Storage.MainCmdQueue.Clear();
     }
 
     void Renderer::DrawEntity(const Entity& entity)
@@ -152,6 +157,12 @@ namespace Almond
 
         s_Data.BatchVBO->SetData(s_Data.BtVertices, vertexCount * sizeof(ShaderVertexData));
         s_Data.BatchIBO->SetData(s_Data.BtIndices, indexCount);
+
+        // auto command = s_Storage.MainCmdQueue.EnqueueCommand<RenderCommands::Draw>(0);
+        // command->StartVertex = 3;
+        // command->VertexCount = vertexCount;
+
+        s_Storage.MainCmdQueue.Submit();
 
         glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
     }
