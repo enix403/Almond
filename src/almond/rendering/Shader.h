@@ -29,7 +29,7 @@ namespace Almond
 
         static Ref<Shader> Create(const std::string& name, const ShaderSources& sources);
 
-        inline uint GetId() const
+        inline uint32_t GetID() const
         {
             return m_ProgramID;
         }
@@ -60,7 +60,7 @@ namespace Almond
 
     private:
         mutable std::unordered_map<std::string, int> m_UniformLocationCache;
-        uint m_ProgramID;
+        uint32_t m_ProgramID;
         std::string m_Name;
     };
 

@@ -29,7 +29,7 @@ namespace Almond
     public:
         virtual ~Texture() = default;
 
-        virtual uint GetId() const = 0;
+        virtual uint GetID() const = 0;
         virtual void Bind(int slot) const = 0;
     };
 
@@ -63,7 +63,7 @@ namespace Almond
     public:
         static Ref<Texture2D> CreateFromFile(const std::string& filepath);
 
-        inline uint GetId() const override { return m_TexID;  }
+        inline uint GetID() const override { return m_TexID;  }
         inline u32 GetWidth() const        { return m_Width;  }
         inline u32 GetHeight() const       { return m_Height; }
 
