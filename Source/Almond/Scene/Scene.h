@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "almond/editor/Entity.h"
+#include <Almond/Scene/Entity.h>
 
 namespace Almond
 {

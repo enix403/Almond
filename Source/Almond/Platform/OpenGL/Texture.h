@@ -1,7 +1,7 @@
 #pragma once
 
-#include "almond/core/base.h"
-#include "almond/utils/typedefs.h"
+#include <Almond/Core/Base.h>
+#include <Almond/Utilities/typedefs.h>
 
 #include <string>
 

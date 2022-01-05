@@ -3,11 +3,11 @@
 #include <string>
 #include <vector>
 
-#include "almond/core/base.h"
-#include "almond/core/Buffer.h"
-#include "almond/core/VertexArray.h"
+#include <Almond/Core/Base.h>
+#include <Almond/Platform/OpenGL/Buffer.h>
+#include <Almond/Platform/OpenGL/VertexArray.h>
 
-#include "almond/editor/Mesh.h"
+#include <Almond/Graphics/Mesh.h>
 
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>

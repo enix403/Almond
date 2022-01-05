@@ -1,5 +1,5 @@
-#include "almond/rendering/Shader.h"
-#include "almond/core/Logging.h"
+#include <Almond/Platform/OpenGL/Shader.h>
+#include <Almond/Core/Logging.h>
 
 #include <glad/gl.h>
 

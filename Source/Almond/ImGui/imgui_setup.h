@@ -1,6 +1,6 @@
 #pragma once
 
-#include "almond/window/Window.h"
+#include <Almond/Platform/Windowing/Window.h>
 
 namespace Almond
 {

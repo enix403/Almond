@@ -1,5 +1,5 @@
-#include "platform/linux/LinuxInput.h"
-#include "almond/core/Application.h"
+#include <Almond/Platform/Input/LinuxInput.h>
+#include <Almond/Core/Application.h>
 
 #include <GLFW/glfw3.h>
 

@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "almond/events/Event.h"
-#include "almond/core/Timestep.h"
+#include <Almond/Events/Event.h>
+#include <Almond/Core/Timestep.h>
 
 namespace Almond
 {

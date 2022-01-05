@@ -1,5 +1,5 @@
-#include "almond/rendering/RenderAPI.h"
-#include "almond/core/Logging.h"
+#include <Almond/Graphics/RenderAPI.h>
+#include <Almond/Core/Logging.h>
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>

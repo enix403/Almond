@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "almond/utils/typedefs.h"
+#include <Almond/Utilities/typedefs.h>
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>

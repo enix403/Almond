@@ -1,6 +1,6 @@
 #include "Framebuffer.h"
 
-#include "almond/core/Logging.h"
+#include <Almond/Core/Logging.h>
 
 #include <glad/gl.h>
 

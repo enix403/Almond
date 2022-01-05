@@ -1,6 +1,6 @@
 #pragma once
 
-#include "almond/layers/Layer.h"
+#include <Almond/Core/Layer.h>
 
 namespace Almond
 {

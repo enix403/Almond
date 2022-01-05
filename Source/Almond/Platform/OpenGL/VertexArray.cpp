@@ -1,4 +1,4 @@
-#include "almond/core/VertexArray.h"
+#include <Almond/Platform/OpenGL/VertexArray.h>
 
 #include <glad/gl.h>
 

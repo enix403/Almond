@@ -1,11 +1,11 @@
-#include "platform/linux/LinuxWindow.h"
+#include <Almond/Platform/Windowing/LinuxWindow.h>
 #include <GLFW/glfw3.h>
 
-#include "almond/core/Logging.h"
-#include "almond/events/Event.h"
-#include "almond/events/window_events.h"
-#include "almond/events/mouse_events.h"
-#include "almond/events/keyboard_events.h"
+#include <Almond/Core/Logging.h>
+#include <Almond/Events/Event.h>
+#include <Almond/Events/window_events.h>
+#include <Almond/Events/mouse_events.h>
+#include <Almond/Events/keyboard_events.h>
 
 namespace Almond {
 

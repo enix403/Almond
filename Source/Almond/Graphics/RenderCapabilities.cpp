@@ -1,6 +1,6 @@
 #include "RenderCapabilities.h"
 
-#include "almond/core/base.h"
+#include <Almond/Core/Base.h>
 
 #include <glad/gl.h>
 

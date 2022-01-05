@@ -2,11 +2,11 @@
 
 #include <chrono>
 
-#include "almond/core/base.h"
-#include "almond/events/Event.h"
-#include "almond/events/window_events.h"
-#include "almond/window/Window.h"
-#include "almond/layers/LayerStack.h"
+#include <Almond/Core/Base.h>
+#include <Almond/Events/Event.h>
+#include <Almond/Events/window_events.h>
+#include <Almond/Platform/Windowing/Window.h>
+#include <Almond/Core/LayerStack.h>
 
 
 namespace Almond

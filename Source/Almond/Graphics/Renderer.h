@@ -1,7 +1,7 @@
 #pragma once
 
-#include "almond/rendering/Camera.h"
-#include "almond/editor/Entity.h"
+#include <Almond/Graphics/Camera.h>
+#include <Almond/Scene/Entity.h>
 
 namespace Almond
 {

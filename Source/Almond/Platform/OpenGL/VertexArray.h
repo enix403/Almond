@@ -1,6 +1,6 @@
 #pragma once
 
-#include "almond/core/Buffer.h"
+#include <Almond/Platform/OpenGL/Buffer.h>
 
 namespace Almond
 {

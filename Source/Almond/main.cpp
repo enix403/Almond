@@ -1,15 +1,15 @@
 
-// #include "almond/core/Application.h"
+#include <Almond/Core/Application.h>
 
 #include <iostream>
 
-// using Almond::Application;
+using Almond::Application;
 
 int main()
 {
-    std::cout << "Hello Reboot Almond" << std::endl;
-    return 0;
-    // Application::Initialize();
-    // Application* app = Application::Get();
-    // app->Run();
+    // std::cout << "Hello Reboot Almond" << std::endl;
+    // return 0;
+    Application::Initialize();
+    Application* app = Application::Get();
+    app->Run();
 }

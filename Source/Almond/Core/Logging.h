@@ -8,7 +8,7 @@
 #pragma warning(pop)
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include "glm/gtx/string_cast.hpp"
+#include <glm/gtx/string_cast.hpp>
 
 typedef spdlog::logger AppLogger;
 
@@ -55,7 +55,7 @@ template<typename T, glm::qualifier Q>                                      FORM
 // -------------------------------------
 
 
-# ifdef _AD_DEBUG
+# ifdef AD_ENABLE_LOGGING
 #     define AD_CORE_LOG_TRACE(...) ::Almond::Logging::GetLogger().trace(__VA_ARGS__)
 #     define AD_CORE_LOG_DEBUG(...) ::Almond::Logging::GetLogger().debug(__VA_ARGS__)
 #     define AD_CORE_LOG_INFO(...)  ::Almond::Logging::GetLogger().info(__VA_ARGS__)

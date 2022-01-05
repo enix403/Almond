@@ -1,11 +1,11 @@
 #pragma once
 
-#include "almond/core/base.h"
+#include <Almond/Core/Base.h>
 
 #include <initializer_list>
 #include <vector>
 
-#include "almond/rendering//Texture.h"
+#include <Almond/Platform/OpenGL/Texture.h>
 
 // #include <glm/vec4.hpp>
 

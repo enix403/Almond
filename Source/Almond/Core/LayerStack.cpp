@@ -1,4 +1,4 @@
-#include "almond/layers/LayerStack.h"
+#include <Almond/Core/LayerStack.h>
 
 namespace Almond
 {

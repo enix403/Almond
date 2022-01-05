@@ -1,6 +1,6 @@
 #pragma once
 
-#include "almond/input/Input.h"
+#include <Almond/Platform/Input/Input.h>
 
 
 namespace Almond {

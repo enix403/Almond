@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "almond/core/base.h"
-#include "almond/layers/Layer.h"
+#include <Almond/Core/Base.h>
+#include <Almond/Core/Layer.h>
 
 namespace Almond
 {

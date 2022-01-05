@@ -19,9 +19,8 @@
 
 // -------- Asserts --------
 //
-#ifdef _AD_DEBUG
 
-#ifdef _AD_ENABLE_ASSERTS
+#ifdef AD_ENABLE_ASSERTS
     #include <filesystem>
     #include <signal.h>
 
@@ -64,9 +63,7 @@
         )(__VA_ARGS__))
 #else
     #define AD_ASSERT(...)
-#endif // ifdef _AD_ENABLE_ASSERTS
-
-#endif // ifdef _AD_DEBUG
+#endif // ifdef AD_ENABLE_ASSERTS
 
 
 // -------- MISC Macros --------

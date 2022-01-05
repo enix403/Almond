@@ -3,7 +3,7 @@
 #include <functional>
 #include <string>
 
-#include "almond/core/base.h"
+#include <Almond/Core/Base.h>
 
 namespace Almond::Events
 {

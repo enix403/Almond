@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-#include "almond/events/Event.h"
+#include <Almond/Events/Event.h>
 
 namespace Almond::Events
 {

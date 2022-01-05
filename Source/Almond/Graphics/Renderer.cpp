@@ -1,13 +1,13 @@
 #include "Renderer.h"
 #include <memory>
 
-#include "almond/core/base.h"
-#include "almond/utils/colors.h"
-#include "almond/rendering/Shader.h"
-#include "almond/rendering/Texture.h"
-#include "almond/rendering/RenderCommand.h"
-#include "almond/core/Buffer.h"
-#include "almond/core/VertexArray.h"
+#include <Almond/Core/Base.h>
+#include <Almond/Utilities/colors.h>
+#include <Almond/Platform/OpenGL/Shader.h>
+#include <Almond/Platform/OpenGL/Texture.h>
+#include <Almond/Graphics/RenderCommand.h>
+#include <Almond/Platform/OpenGL/Buffer.h>
+#include <Almond/Platform/OpenGL/VertexArray.h>
 
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
@@ -84,7 +84,7 @@ namespace Almond
 
         s_Data.BatchVAO->AddIndexBuffer(*s_Data.BatchIBO);
 
-        s_Storage.DefaultEntityShader = s_ShaderLib.LoadFromFile("EditorDiffuseModel", "assets/shaders/EditorDiffuseModel.glsl");
+        s_Storage.DefaultEntityShader = s_ShaderLib.LoadFromFile("EditorDiffuseModel", "Source/Almond/Shaders/EditorDiffuseModel.glsl");
 
         s_Storage.DefaultTexture = CreateScoped<Texture2D>(1, 1, TexFormat::RGBA_8);
 

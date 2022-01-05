@@ -3,7 +3,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec2.hpp>
 
-#include "almond/rendering/Camera.h"
+#include <Almond/Graphics/Camera.h>
 
 namespace Almond {
 

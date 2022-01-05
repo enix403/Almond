@@ -1,4 +1,4 @@
-#include "almond/core/Buffer.h"
+#include <Almond/Platform/OpenGL/Buffer.h>
 
 #include <glad/gl.h>
 

@@ -1,6 +1,6 @@
-#include "almond/core/Logging.h"
+#include <Almond/Core/Logging.h>
 
-#include "spdlog/sinks/stdout_color_sinks.h"
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace Almond
 {

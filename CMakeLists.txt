@@ -39,11 +39,14 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInf
     set(ALMOND_DEBUG_BUILD ON)
     # endif()
 
-    add_compile_definitions(AD_DEBUG)
-    add_compile_definitions(_AD_ENABLE_ASSERTS)
+    # add_compile_definitions(AD_DEBUG)
+    add_compile_definitions(AD_DEV_BUILD)
+    add_compile_definitions(AD_ENABLE_ASSERTS)
+    add_compile_definitions(AD_ENABLE_LOGGING)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(ALMOND_RELEASE_BUILD ON)
 endif()
+# TODO: Error out if not one of above build types
 
 set(ALMOND_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

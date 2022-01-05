@@ -1,14 +1,14 @@
 #pragma once
 
-#include "almond/core/Buffer.h"
-#include "almond/core/VertexArray.h"
-#include "almond/core/base.h"
-#include "almond/layers/Layer.h"
-#include "almond/editor/Entity.h"
-#include "almond/editor/EditorCamera.h"
-#include "almond/rendering/Shader.h"
-#include "almond/rendering/Texture.h"
-#include "almond/rendering/Framebuffer.h"
+#include <Almond/Platform/OpenGL/Buffer.h>
+#include <Almond/Platform/OpenGL/VertexArray.h>
+#include <Almond/Core/Base.h>
+#include <Almond/Core/Layer.h>
+#include <Almond/Scene/Entity.h>
+#include <Almond/Editor/EditorCamera.h>
+#include <Almond/Platform/OpenGL/Shader.h>
+#include <Almond/Platform/OpenGL/Texture.h>
+#include <Almond/Platform/OpenGL/Framebuffer.h>
 
 namespace Almond::Editor
 {

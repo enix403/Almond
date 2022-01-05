@@ -3,8 +3,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "almond/core/base.h"
-#include "almond/utils/typedefs.h"
+#include <Almond/Core/Base.h>
+#include <Almond/Utilities/typedefs.h>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec2.hpp>

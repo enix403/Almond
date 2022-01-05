@@ -1,7 +1,7 @@
 #pragma once
 
-#include "almond/utils/typedefs.h"
-#include "almond/window/Window.h"
+#include <Almond/Utilities/typedefs.h>
+#include <Almond/Platform/Windowing/Window.h>
 
 // better than including the whole glfw library for this tiny struct
 struct GLFWwindow;

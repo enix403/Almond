@@ -1,11 +1,11 @@
 #pragma once
 
-#include "almond/core/base.h"
+#include <Almond/Core/Base.h>
 
-#include "almond/events/Event.h"
-#include "almond/utils/holders.h"
-#include "almond/utils/typedefs.h"
-#include "almond/rendering/Camera.h"
+#include <Almond/Events/Event.h>
+#include <Almond/Utilities/holders.h>
+#include <Almond/Utilities/typedefs.h>
+#include <Almond/Graphics/Camera.h>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 

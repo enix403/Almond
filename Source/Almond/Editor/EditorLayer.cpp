@@ -1,4 +1,4 @@
-#include "almond/editor/EditorLayer.h"
+#include <Almond/Editor/EditorLayer.h>
 
 #include <array>
 
@@ -7,17 +7,17 @@
 
 #include <glm/glm.hpp>
 
-#include "almond/input/Input.h"
-#include "almond/input/codes.h"
+#include <Almond/Platform/Input/Input.h>
+#include <Almond/Platform/Input/codes.h>
 
-#include "almond/core/base.h"
-#include "almond/core/Application.h"
-#include "almond/ui/ImGuiLayer.h"
-#include "almond/events/window_events.h"
-#include "almond/events/mouse_events.h"
-#include "almond/rendering/Renderer.h"
+#include <Almond/Core/Base.h>
+#include <Almond/Core/Application.h>
+#include <Almond/ImGui/ImGuiLayer.h>
+#include <Almond/Events/window_events.h>
+#include <Almond/Events/mouse_events.h>
+#include <Almond/Graphics/Renderer.h>
 
-#include "almond/utils/colors.h"
+#include <Almond/Utilities/colors.h>
 
 namespace
 {

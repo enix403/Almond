@@ -1,4 +1,4 @@
-#include "almond/rendering/OrthographicCamera2D.h"
+#include <Almond/Graphics/OrthographicCamera2D.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 

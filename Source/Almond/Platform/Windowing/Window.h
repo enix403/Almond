@@ -1,7 +1,7 @@
 #pragma once
 
-#include "almond/events/Event.h"
-#include "almond/utils/typedefs.h"
+#include <Almond/Events/Event.h>
+#include <Almond/Utilities/typedefs.h>
 #include <functional>
 #include <string>
 

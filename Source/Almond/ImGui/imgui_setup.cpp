@@ -1,4 +1,4 @@
-#include "almond/ui/imgui_setup.h"
+#include <Almond/ImGui/imgui_setup.h>
 
 #include <iostream>
 #include <sstream>
@@ -46,7 +46,7 @@ namespace Almond
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
 
-        io.Fonts->AddFontFromFileTTF("assets/fonts/Fira_Sans/FiraSans-Regular.ttf", 15.5f);
+        io.Fonts->AddFontFromFileTTF("Assets/Fonts/Fira_Sans/FiraSans-Regular.ttf", 15.5f);
     }
 
     void ImGuiManager::SetTheme(Theme theme)

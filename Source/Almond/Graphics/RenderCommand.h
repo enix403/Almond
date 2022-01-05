@@ -1,6 +1,6 @@
 #pragma once
 
-#include "almond/core/base.h"
+#include <Almond/Core/Base.h>
 
 namespace Almond
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "almond/utils/typedefs.h"
+#include <Almond/Utilities/typedefs.h>
 #include <type_traits>
 
 namespace Almond

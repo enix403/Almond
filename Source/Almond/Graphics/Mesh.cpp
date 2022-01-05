@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-#include "almond/utils/math.h"
+#include <Almond/Maths/math.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 

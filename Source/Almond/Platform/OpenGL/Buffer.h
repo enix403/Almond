@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "almond/utils/typedefs.h"
+#include <Almond/Utilities/typedefs.h>
 
 // Aliases for OpenGL buffer usage constants (GL_STATIC_DRAW, GL_STREAM_DRAW etc).
 // These are here so that the consumer of the buffer api defined below does not

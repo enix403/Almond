@@ -1,17 +1,17 @@
-#include "almond/core/Application.h"
+#include <Almond/Core/Application.h>
 
 #include <functional>
 
-#include "almond/core/base.h"
-#include "almond/core/Logging.h"
-#include "almond/core/Timestep.h"
-#include "almond/editor/EditorLayer.h"
-#include "almond/rendering/RenderAPI.h"
-#include "almond/rendering/RenderCapabilities.h"
-#include "almond/ui/imgui_setup.h"
-#include "almond/ui/ImGuiLayer.h"
-#include "platform/linux/LinuxWindow.h"
-#include "almond/events/keyboard_events.h"
+#include <Almond/Core/Base.h>
+#include <Almond/Core/Logging.h>
+#include <Almond/Core/Timestep.h>
+#include <Almond/Editor/EditorLayer.h>
+#include <Almond/Graphics/RenderAPI.h>
+#include <Almond/Graphics/RenderCapabilities.h>
+#include <Almond/ImGui/imgui_setup.h>
+#include <Almond/ImGui/ImGuiLayer.h>
+#include <Almond/Platform/Windowing/LinuxWindow.h>
+#include <Almond/Events/keyboard_events.h>
 
 namespace chrono = std::chrono;
 

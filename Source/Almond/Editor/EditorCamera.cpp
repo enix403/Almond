@@ -1,13 +1,13 @@
-#include "almond/editor/EditorCamera.h"
+#include <Almond/Editor/EditorCamera.h>
 
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "almond/events/keyboard_events.h"
-#include "almond/events/mouse_events.h"
-#include "almond/input/Input.h"
-#include "almond/input/codes.h"
+#include <Almond/Events/keyboard_events.h>
+#include <Almond/Events/mouse_events.h>
+#include <Almond/Platform/Input/Input.h>
+#include <Almond/Platform/Input/codes.h>
 
 
 #define CAMERA_ARCBALL_MAX_RADIUS 40.0f

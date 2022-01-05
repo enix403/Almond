@@ -1,9 +1,9 @@
-#include "almond/rendering/Texture.h"
+#include <Almond/Platform/OpenGL/Texture.h>
 
 #include <glad/gl.h>
 #include <stb_image/stb_image.h>
 
-#include "almond/core/Logging.h"
+#include <Almond/Core/Logging.h>
 
 #define TEX_FORMAT_RGBA 1
 #define TEX_FORMAT_RGB 2
