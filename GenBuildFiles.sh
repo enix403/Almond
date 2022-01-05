@@ -9,13 +9,13 @@
 function GenBuildFiles_Debug() {
     mkdir -p build/debug
     echo "------------ Generating build files for Debug build mode ------------"
-    exec env cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug "${@}" -S .   
+    exec env cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug -S . "${@}"   
 }
 
 function GenBuildFiles_Release() {
     mkdir -p build/release
     echo "------------ Generating build files for Release build mode ------------"
-    cmake -B build/release -DCMAKE_BUILD_TYPE=Release "${@}" -S .
+    cmake -B build/release -DCMAKE_BUILD_TYPE=Release -S . "${@}"
 }
 
 if [[ -z "$1" ]]
