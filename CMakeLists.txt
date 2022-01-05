@@ -1,35 +1,54 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 
-# ============================= SETUP =============================
+# project(AlmondEditor VERSION 1.0)
+project ("AlmondEditor")
 
-project(AlmondEditor VERSION 1.0)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-include(cmake/appsources.cmake)
-add_executable(almond ${APP_SOURCES})
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug")
+    message(WARNING "Build type is not set, using Debug by default")
+endif()
 
-include(cmake/deps.cmake)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    add_compile_options("/MP")
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_compile_options("/MDd")
+        add_compile_options("/Zi")
+    else()
+        add_compile_options("/MD")
+    endif()
+endif()
 
-set(
-    APP_LIBS 
-    Threads::Threads dl
-    glad
-    ${GLFW_LIBRARIES}
-    glm::glm
-    spdlog::spdlog
-    imgui
-    stb_image
-)
+add_compile_definitions(NOMINMAX)
 
-target_compile_definitions(almond PUBLIC GLFW_INCLUDE_NONE)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    # if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(ALMOND_DEBUG_BUILD ON)
+    # endif()
 
-target_include_directories(almond PRIVATE ${APP_SOURCES_DIRECTORY})
-target_link_libraries(almond ${APP_LIBS})
+    # add_compile_definitions(AD_DEBUG)
+    add_compile_definitions(AD_DEV_BUILD)
+    add_compile_definitions(AD_ENABLE_ASSERTS)
+    add_compile_definitions(AD_ENABLE_LOGGING)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(ALMOND_RELEASE_BUILD ON)
+endif()
+# TODO: Error out if not one of above build types
 
-set_property(TARGET almond PROPERTY C_STANDARD 11)
-set_property(TARGET almond PROPERTY CXX_STANDARD 17)
+set(ALMOND_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
+add_subdirectory("External")
+add_subdirectory("Source")
