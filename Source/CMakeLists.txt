@@ -11,11 +11,11 @@ set(ALMOND_SOURCES
 "Almond/Core/Logging.cpp"
 "Almond/Editor/EditorCamera.cpp"
 "Almond/Editor/EditorLayer.cpp"
-"Almond/Graphics/Mesh.cpp"
+# "Almond/Graphics/Mesh.cpp"
 "Almond/Graphics/OrthographicCamera2D.cpp"
 "Almond/Graphics/RenderAPI.cpp"
 "Almond/Graphics/RenderCapabilities.cpp"
-"Almond/Graphics/RenderCommand.cpp"
+# "Almond/Graphics/RenderCommand.cpp"
 "Almond/Graphics/Renderer.cpp"
 "Almond/ImGui/ImGuiBuild.cpp"
 "Almond/ImGui/ImGuiLayer.cpp"
@@ -28,8 +28,8 @@ set(ALMOND_SOURCES
 "Almond/Platform/OpenGL/Texture.cpp"
 "Almond/Platform/OpenGL/VertexArray.cpp"
 "Almond/Platform/Windowing/LinuxWindow.cpp"
-"Almond/Scene/Scene.cpp"
-"Almond/Scene/Entity.cpp"
+# "Almond/Scene/Scene.cpp"
+# "Almond/Scene/Entity.cpp"
 )
 
 cmake_policy(SET CMP0076 NEW) # Some random path flag for target_sources() below

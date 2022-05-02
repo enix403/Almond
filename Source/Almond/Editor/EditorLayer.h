@@ -4,10 +4,8 @@
 #include <Almond/Platform/OpenGL/VertexArray.h>
 #include <Almond/Core/Base.h>
 #include <Almond/Core/Layer.h>
-#include <Almond/Scene/Entity.h>
 #include <Almond/Editor/EditorCamera.h>
 #include <Almond/Platform/OpenGL/Shader.h>
-#include <Almond/Platform/OpenGL/Texture.h>
 #include <Almond/Platform/OpenGL/Framebuffer.h>
 
 namespace Almond::Editor
@@ -29,7 +27,6 @@ namespace Almond::Editor
 
     private:
         void CreateDockSpace();
-        void CreateMenuBar();
 
     private:
         int m_MasterAreaFlags;
@@ -45,7 +42,5 @@ namespace Almond::Editor
 
         // Relative to the top left of OS Window
         glm::vec2 m_VpMinBounds;
-
-        // Entity m_TestEntity { "Test Model" };
     };
 } // namespace Almond::Editor

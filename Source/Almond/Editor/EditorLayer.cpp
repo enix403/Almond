@@ -19,41 +19,6 @@
 
 #include <Almond/Utilities/colors.h>
 
-namespace
-{
-    using namespace Almond;
-
-    constexpr int ENTTS_GRID_SIZE = 5;
-
-    std::array<Entity, ENTTS_GRID_SIZE * ENTTS_GRID_SIZE> entts = {
-        Entity { "Test Entity 01" },
-        Entity { "Test Entity 02" },
-        Entity { "Test Entity 03" },
-        Entity { "Test Entity 04" },
-        Entity { "Test Entity 05" },
-        Entity { "Test Entity 06" },
-        Entity { "Test Entity 07" },
-        Entity { "Test Entity 08" },
-        Entity { "Test Entity 09" },
-        Entity { "Test Entity 10" },
-        Entity { "Test Entity 11" },
-        Entity { "Test Entity 12" },
-        Entity { "Test Entity 13" },
-        Entity { "Test Entity 14" },
-        Entity { "Test Entity 15" },
-        Entity { "Test Entity 16" },
-        Entity { "Test Entity 17" },
-        Entity { "Test Entity 18" },
-        Entity { "Test Entity 19" },
-        Entity { "Test Entity 20" },
-        Entity { "Test Entity 21" },
-        Entity { "Test Entity 22" },
-        Entity { "Test Entity 23" },
-        Entity { "Test Entity 24" },
-        Entity { "Test Entity 25" },
-    };
-}
-
 namespace Almond::Editor
 {
     using namespace Almond;
@@ -107,81 +72,19 @@ namespace Almond::Editor
             m_FrameBuffer = CreateScoped<Framebuffer>(fbspec);
         }
 
-        Renderer::Init();
-#if 0
-        // Test Quad
-        auto& testMesh = m_TestEntity.GetMesh();
-        testMesh.Vertices = {
-            {-0.5f, -0.5f, 0.0f}, // bottom left
-            { 0.5f, -0.5f, 0.0f}, // bottom right
-            { 0.5f,  0.5f, 0.0f}, // top right
-            {-0.5f,  0.5f, 0.0f}, // top left
-        };
-
-        testMesh.Normals = {
-            {0.0f, 0.0f, 1.0f},
-            {0.0f, 0.0f, 1.0f},
-            {0.0f, 0.0f, 1.0f},
-            {0.0f, 0.0f, 1.0f},
-        };
-
-        testMesh.TextureCoords = {
-            {0.0f, 0.0f},
-            {1.0f, 0.0f},
-            {1.0f, 1.0f},
-            {0.0f, 1.0f},
-        };
-
-        testMesh.Indices = { 0, 1, 2, 0, 2, 3 };
-
-        auto& testTransform = m_TestEntity.GetTransform();
-
-        testTransform.Position += glm::vec3 {1.0f, 0.0f, 0.0f};
-        testTransform.Rotation = { 0.0f, 0.0f, 45.0f };
-        m_TestEntity.RecalculateTransformData();
-#endif
-        for (int i = 0; i < entts.size(); i++)
-        {
-            auto& e = entts[i];
-            auto& mesh = e.GetMesh();
-
-            mesh.Vertices = {
-                {-0.5f, -0.5f, 0.0f}, // bottom left
-                { 0.5f, -0.5f, 0.0f}, // bottom right
-                { 0.5f,  0.5f, 0.0f}, // top right
-                {-0.5f,  0.5f, 0.0f}, // top left
-            };
-
-            mesh.Normals = {
-                {0.0f, 0.0f, 1.0f},
-                {0.0f, 0.0f, 1.0f},
-                {0.0f, 0.0f, 1.0f},
-                {0.0f, 0.0f, 1.0f},
-            };
-
-            mesh.TextureCoords.resize(4); // We don't need texture coords
-
-            mesh.Indices = { 0, 1, 2, 0, 2, 3 };
-            auto& transform = e.GetTransform();
-            transform.Position = { 
-                -(ENTTS_GRID_SIZE / 2) + (int)(i % ENTTS_GRID_SIZE), 
-                -(ENTTS_GRID_SIZE / 2) + (int)(i / ENTTS_GRID_SIZE), 
-                 0.f
-            };
-            transform.Scale.x = transform.Scale.y = 0.7f;
-            e.RecalculateTransformData();
-        }
+        // Renderer::Init();
     }
 
     void EditorLayer::OnDetach() 
     {
-        Renderer::Deinit();
+        // Renderer::Deinit();
     }
 
     bool EditorLayer::OnEvent(const Events::Event& e)
     {
         m_CamController->OnEvent(e);
 
+        /*
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<MouseReleaseEvent>([this](const MouseReleaseEvent& event) {
             auto mousePosAbsolute = ImGui::GetMousePos();
@@ -197,6 +100,7 @@ namespace Almond::Editor
                 // AD_CORE_LOG_TRACE("Mouse Object ID = {0}", objectId);
             }
         });
+        */
 
         return true;
     }
@@ -207,33 +111,12 @@ namespace Almond::Editor
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         m_FrameBuffer->ClearColorAttachment(1, -1);
 
-        Renderer::BeginScene(*m_Camera);
-        // Renderer::DrawEntity(m_TestEntity);
-        for (const auto& e: entts)
-            Renderer::DrawEntity(e);
-        Renderer::EndScene();
-
         m_FrameBuffer->Unbind();
     }
 
     void EditorLayer::OnImGuiRender()
     {
         CreateDockSpace();
-        CreateMenuBar();
-
-        ImGui::Begin("Sheet View");
-        ImGui::Text("Here goes the main grid....");
-        ImGui::Text(
-            "App average: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
-
-        ImGui::Begin("Some Panel");
-        ImGui::Text("Empty 1");
-        ImGui::End();
-
-        ImGui::Begin("Cool Panel");
-        ImGui::Text("Empty 2");
-        ImGui::End();
 
         /* ================= Scene Viewport ================= */
 
@@ -322,60 +205,5 @@ namespace Almond::Editor
         // Submit the DockSpace
         ImGuiID dockspaceId = ImGui::GetID("MainDockSpace");
         ImGui::DockSpace(dockspaceId, ImVec2(0.0f, 0.0f), m_DockNodeFlags);
-    }
-
-    void EditorLayer::CreateMenuBar()
-    {
-        if(ImGui::BeginMenuBar())
-        {
-
-            if(ImGui::BeginMenu("File"))
-            {
-                ImGui::MenuItem("New Project");
-                ImGui::MenuItem("New Surface");
-
-                ImGui::Separator();
-
-                ImGui::MenuItem("Open Project");
-                ImGui::MenuItem("Save Project");
-                ImGui::MenuItem("Reload Project");
-
-                ImGui::Separator();
-
-                ImGui::MenuItem("Preferences");
-                if (ImGui::MenuItem("Quit"))
-                    Application::Get()->Close();
-
-                ImGui::EndMenu();
-            }
-
-            if(ImGui::BeginMenu("Edit"))
-            {
-                ImGui::MenuItem("Copy");
-                ImGui::MenuItem("Cut");
-                ImGui::MenuItem("Paste");
-
-                ImGui::Separator();
-
-                ImGui::MenuItem("Undo");
-                ImGui::MenuItem("Redo");
-
-                ImGui::EndMenu();
-            }
-
-            if(ImGui::BeginMenu("About"))
-            {
-
-                ImGui::MenuItem("About Me");
-                ImGui::MenuItem("Help");
-                ImGui::MenuItem("Version");
-
-                ImGui::EndMenu();
-            }
-
-            // ImGui::Separator();
-
-            ImGui::EndMenuBar();
-        }
     }
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Almond/Graphics/Camera.h>
-#include <Almond/Scene/Entity.h>
 
 namespace Almond
 {
@@ -10,9 +9,5 @@ namespace Almond
     public:
         static void Init();
         static void Deinit();
-
-        static void BeginScene(const Camera& camera);
-        static void DrawEntity(const Entity& entity);
-        static void EndScene();
     };
 }
