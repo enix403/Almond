@@ -13,6 +13,7 @@
 #include <Almond/Platform/Windowing/LinuxWindow.h>
 #include <Almond/Events/keyboard_events.h>
 
+
 namespace chrono = std::chrono;
 
 namespace Almond
@@ -22,11 +23,12 @@ namespace Almond
 
     void Application::Initialize()
     {
-        if(s_Instance != nullptr)
+        if (s_Instance != nullptr)
         {
             AD_CORE_LOG_ERROR("Application has been already initialized");
             return;
         }
+
 
         Almond::Logging::Init();
         s_Instance = new Application();
@@ -34,8 +36,7 @@ namespace Almond
 
     void Application::Run()
     {
-
-        if(m_Running)
+        if (m_Running)
         {
             AD_CORE_LOG_ERROR("Application is already running");
             return;
@@ -66,7 +67,7 @@ namespace Almond
 
     void Application::OnEvent(const Events::Event& event)
     {
-        if(event.GetType() == Events::EventType::WindowClose)
+        if (event.GetType() == Events::EventType::WindowClose)
         {
             Close();
             return;
@@ -77,11 +78,11 @@ namespace Almond
             dispatcher.Dispatch<Events::WindowResizeEvent>(AD_BIND_EVENT_METHOD(Application::OnResize));
         }
         
-        for(auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+        for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
         {
             it--;
             bool passDown = (*it)->OnEvent(event);
-            if(!passDown)
+            if (!passDown)
                 break;
         }
     }
@@ -98,7 +99,7 @@ namespace Almond
 
         m_LastFrameTime = chrono::high_resolution_clock::now();
 
-        while(m_Running)
+        while (m_Running)
         {
             m_MainWindow->PollEvents();
 

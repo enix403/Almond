@@ -14,8 +14,12 @@
 // "MU" = "Macro Util"
 //
 #define MU_EXPAND(x) x
-#define MU_STRINGIFY(x) #x
-#define MU_PASTE(x, y) x##y
+
+#define _MU_STRINGIFY_IMPL(x) #x
+#define MU_STRINGIFY(x) _MU_STRINGIFY_IMPL(x)
+
+#define _MU_PASTE_IMPL(x, y) x##y
+#define MU_PASTE(x, y) _MU_PASTE_IMPL(x, y)
 
 // -------- Asserts --------
 //

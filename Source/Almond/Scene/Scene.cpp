@@ -10,7 +10,5 @@ namespace Almond
     EntityHandle_t Scene::CreateEntity()
     {
         const auto& entity = m_Entities[m_Entities.size()] = {};
-
     }
-
 }

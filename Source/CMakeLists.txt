@@ -32,7 +32,10 @@ set(ALMOND_SOURCES
 "Almond/Scene/Entity.cpp"
 )
 
-add_executable(almond ${ALMOND_SOURCES})
+cmake_policy(SET CMP0076 NEW) # Some random path flag for target_sources() below
+cmake_policy(SET CMP0079 NEW) # Allow to modify target `almond` (not owned by this CMakeLists.txt) 
+
+target_sources(almond PUBLIC ${ALMOND_SOURCES})
 target_include_directories(almond PRIVATE
     ${ALMOND_ROOT_DIR}/Source
 )
@@ -40,11 +43,11 @@ target_include_directories(almond PRIVATE
 target_precompile_headers(almond PUBLIC adpch.h)
 target_link_libraries(almond PRIVATE AlmondDependencies)
 
-
-# Almond/Shaders
 if(ALMOND_DEBUG_BUILD)
     add_compile_definitions(ASSET_FOLDER_PATH=\"${ALMOND_ROOT_DIR}/Assets/\")
     add_compile_definitions(SHADER_FOLDER_PATH=\"${ALMOND_ROOT_DIR}/Source/Almond/Shaders/\")
+
+    add_compile_definitions(DEV_BUILD_CWD=\"${ALMOND_ROOT_DIR}\")
 elseif(ALMOND_RELEASE_BUILD)
     add_compile_definitions(ASSET_FOLDER_PATH=\"./Assets/\")
     add_compile_definitions(SHADER_FOLDER_PATH=\"./Assets/Shaders/\")

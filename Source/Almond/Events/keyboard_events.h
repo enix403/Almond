@@ -58,6 +58,8 @@ namespace Almond::Events
         {
             return m_KeyCode;
         }
+
+
         std::string ToString() const override
         {
             std::stringstream ss;

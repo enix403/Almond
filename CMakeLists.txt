@@ -50,5 +50,13 @@ endif()
 
 set(ALMOND_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
+add_executable(almond)
+
+# Enable all warnings
+target_compile_options(almond PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall>
+)
+
 add_subdirectory("External")
 add_subdirectory("Source")
